@@ -1,0 +1,19 @@
+[package]
+name = "Engine"
+version = "0.0.1"
+description = "A lightweight game framework for making games with minimum friction"
+keywords = ["engine", "graphics", "2D", "game"]
+authors = ["sHaDoW <alexandervelez7245@gmail.com>"]
+
+edition = "2018"
+license = "MIT"
+categories = ["game-engines"]
+
+[[bin]]
+name = "test"
+path = "src/bin.rs"
+
+[dependencies]
+glfw = "0.41.0"
+gl = "0.14.0"
+#image = "0.23.12"
