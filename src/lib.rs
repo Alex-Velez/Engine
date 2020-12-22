@@ -15,11 +15,18 @@
 //! ## Basic Project Template
 //!
 //! ```rust,no_run
-//! use Engine;
-//!
+//! use Engine::{self, Window, Size2D, Color};
+//! 
 //! fn main() {
+//!		let window = Window::from("TestGame", Size2D::from(856.0, 482.0), Color::BLACK);
 //!
-//! }
+//!		Engine::Run(window, initialize, load_content, update, render);
+//!	}
+//!
+//! fn initialize() {}
+//! fn load_content() {}
+//! fn update() {}
+//! fn render() {}
 //! ```
 
 #![allow(unused_imports)]
@@ -27,33 +34,28 @@
 #![allow(dead_code)]
 
 pub(crate) extern crate glfw;
-pub(crate) use glfw::{Context, Key, Action};
-
 pub(crate) extern crate gl;
-//pub(crate) use gl::types::*;
 
 //pub(crate) use shader::Shader;
 
-pub(crate) use std::sync::mpsc::Receiver;
-pub(crate) use std::ffi::CString;
-pub(crate) use std::ptr;
-pub(crate) use std::str;
-pub(crate) use std::mem;
-pub(crate) use std::os::raw::c_void;
-
 pub mod Collision;
 pub mod Visual;
+pub mod Shader;
 pub mod Math;
 pub(crate) mod GL;
+pub(crate) mod Verbose;
 
 mod Settings;
 mod Global;
 mod Object;
+mod Vector;
 
 pub use Settings::*;
 pub use Global::*;
 pub use Object::*;
+pub use Vector::*;
 
+// Don't judge me!
 macro_rules! impl_cc {
     (for $($t:ty),+) => {
         $(impl Copy for $t {})*
@@ -63,7 +65,10 @@ macro_rules! impl_cc {
 
 impl_cc!(for
 	GL::Vertex,
+	Math::Vector2D,
+	Math::Vector3D,
 	Window,
+	Camera2D,
 	Color,
 	Position2D,
 	Rotation2D,
