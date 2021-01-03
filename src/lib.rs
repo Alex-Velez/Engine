@@ -15,11 +15,18 @@
 //! ## Basic Project Template
 //!
 //! ```rust,no_run
-//! use Engine;
+//! use Engine::{Window, Size2D, Color};
 //!
 //! fn main() {
+//!		let window = Window::from("TestGame", Size2D::from(856.0, 482.0), Color::BLACK);
 //!
-//! }
+//!		Engine::Run(window, initialize, load_content, update, render);
+//!	}
+//!
+//! fn initialize() {}
+//! fn load_content() {}
+//! fn update() {}
+//! fn render() {}
 //! ```
 
 #![allow(unused_imports)]
@@ -27,48 +34,20 @@
 #![allow(dead_code)]
 
 pub(crate) extern crate glfw;
-pub(crate) use glfw::{Context, Key, Action};
-
 pub(crate) extern crate gl;
-//pub(crate) use gl::types::*;
-
-//pub(crate) use shader::Shader;
-
-pub(crate) use std::sync::mpsc::Receiver;
-pub(crate) use std::ffi::CString;
-pub(crate) use std::ptr;
-pub(crate) use std::str;
-pub(crate) use std::mem;
-pub(crate) use std::os::raw::c_void;
 
 pub mod Collision;
 pub mod Visual;
+pub mod shader;
 pub mod Math;
-pub(crate) mod GL;
+pub mod Object;
+pub mod Log;
 
-mod Settings;
 mod Global;
-mod Object;
+mod Vector;
 
-pub use Settings::*;
 pub use Global::*;
-pub use Object::*;
+pub use Vector::*;
 
-macro_rules! impl_cc {
-    (for $($t:ty),+) => {
-        $(impl Copy for $t {})*
-		$(impl Clone for $t { fn clone(&self) -> Self { *self } })*
-    }
-}
-
-impl_cc!(for
-	GL::Vertex,
-	Window,
-	Color,
-	Position2D,
-	Rotation2D,
-	Scale2D,
-	Transform2D,
-	Size2D,
-	Sprite2D
-);
+pub use Global::color::*;
+pub use Global::rotation::*;

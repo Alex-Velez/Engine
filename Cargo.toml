@@ -10,10 +10,11 @@ license = "MIT"
 categories = ["game-engines"]
 
 [[bin]]
-name = "test"
+name = "engine"
 path = "src/bin.rs"
 
 [dependencies]
 glfw = "0.41.0"
 gl = "0.14.0"
+#gl33 = "0.1.1"
 #image = "0.23.12"

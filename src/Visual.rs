@@ -1,8 +1,7 @@
-use super::{
+use crate::{
 	Position2D,
 	Rotation2D,
 	Color,
-	GL,
 };
 
 pub struct Triangle {
