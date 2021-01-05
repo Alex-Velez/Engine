@@ -1,9 +1,31 @@
 // This file is modified code from 'rust-vector' (https://github.com/Wiseluster/rust-vector) created by Wiseluster
 
-use super::Math::{Vector2D, Vector3D};
+use std::convert::{From, Into};
+use std::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign, Rem, RemAssign, Neg, Not};
 
-use std::convert::*;
-use std::ops::*;
+#[derive(Copy, Clone, Debug)]
+pub struct Vector2D {
+    pub x: f32,
+    pub y: f32,
+}
+
+impl Vector2D {
+    pub const ZERO: Vector2D = Vector2D { x: 0.0, y: 0.0 };
+
+    pub const fn new() -> Vector2D {
+        Vector2D {x: 0.0, y: 0.0}
+    }
+
+    pub const fn from(x: f32, y: f32) -> Vector2D {
+        Vector2D {x, y}
+    }
+
+    pub fn set(mut self, x: f32, y: f32) -> Vector2D {
+        self.x = x;
+        self.y = y;
+        self
+    }
+}
 
 impl Add for Vector2D {
 	type Output = Vector2D;
@@ -93,6 +115,30 @@ impl Not for Vector2D {
 	fn not(self) -> f32 {
 		(self.x * self.x + self.y * self.y).sqrt()
 	}
+}
+
+#[derive(Copy, Clone, Debug)]
+pub struct Vector3D {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+}
+
+impl Vector3D {
+    pub const fn new() -> Vector3D {
+        Vector3D {x: 0.0, y: 0.0, z: 0.0}
+    }
+
+    pub const fn from(x: f32, y: f32, z: f32) -> Vector3D {
+        Vector3D {x, y, z}
+    }
+
+    pub fn set(mut self, x: f32, y: f32, z: f32) -> Vector3D {
+        self.x = x;
+        self.y = y;
+        self.z = z;
+        self
+    }
 }
 
 impl Add for Vector3D {
@@ -192,4 +238,3 @@ impl Not for Vector3D {
 		(self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
 	}
 }
-

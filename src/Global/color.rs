@@ -24,26 +24,52 @@ impl Color {
 		assert!(r <= 1.0 && g <= 1.0 && b <= 1.0 && a <= 1.0);
         Color { r: r * 255.0, g: g * 255.0, b: b * 255.0, a: a * 255.0 }
 	}
-	
+
+	pub fn unit_interval(self) -> [f32; 4] {
+		[self.r / 255.0, self.g / 255.0, self.b / 255.0, self.a / 255.0]
+	}
+
+	pub const fn rgb(self) -> [f32; 3] {
+		[self.r, self.g, self.b]
+	}
+
+	pub const fn rgba(self) -> [f32; 4] {
+		[self.r, self.g, self.b, self.a]
+	}
+
 	pub fn set(&mut self, r: f32, g: f32, b: f32, a: f32) {
-		assert!(r >= 0.0 && g >= 0.0 && b >= 0.0 && a >= 0.0);
-		assert!(r <= 255.0 && g <= 255.0 && b <= 255.0 && a <= 255.0);
-		self.r = r;
-		self.g = g;
-		self.b = b;
-		self.a = a;
+		self.r = clamp(r, 0.0, 255.0);
+		self.g = clamp(g, 0.0, 255.0);
+		self.b = clamp(b, 0.0, 255.0);
+		self.a = clamp(a, 0.0, 255.0);
 	}
 
-	pub fn unit_interval(self) -> (f32, f32, f32, f32) {
-		(self.r / 255.0, self.g / 255.0, self.b / 255.0, self.a / 255.0)
+	pub fn add_num(&mut self, r: f32, g: f32, b: f32, a: f32) {
+		self.r = clamp(self.r + r, 0.0, 255.0);
+		self.g = clamp(self.g + g, 0.0, 255.0);
+		self.b = clamp(self.b + b, 0.0, 255.0);
+		self.a = clamp(self.a + a, 0.0, 255.0);
 	}
 
-	pub const fn rgb(self) -> (f32, f32, f32) {
-		(self.r, self.g, self.b)
+	pub fn sub_num(&mut self, r: f32, g: f32, b: f32, a: f32) {
+		self.r = clamp(self.r - r, 0.0, 255.0);
+		self.g = clamp(self.g - g, 0.0, 255.0);
+		self.b = clamp(self.b - b, 0.0, 255.0);
+		self.a = clamp(self.a - a, 0.0, 255.0);
 	}
 
-	pub const fn rgba(self) -> (f32, f32, f32, f32) {
-		(self.r, self.g, self.b, self.a)
+	pub fn mul_num(&mut self, r: f32, g: f32, b: f32, a: f32) {
+		self.r = clamp(self.r * r, 0.0, 255.0);
+		self.g = clamp(self.g * g, 0.0, 255.0);
+		self.b = clamp(self.b * b, 0.0, 255.0);
+		self.a = clamp(self.a * a, 0.0, 255.0);
+	}
+
+	pub fn div_num(&mut self, r: f32, g: f32, b: f32, a: f32) {
+		self.r = clamp(self.r / r, 0.0, 255.0);
+		self.g = clamp(self.g / g, 0.0, 255.0);
+		self.b = clamp(self.b / b, 0.0, 255.0);
+		self.a = clamp(self.a / a, 0.0, 255.0);
 	}
 }
 
@@ -343,152 +369,6 @@ impl Color {
 	pub const BLACK: Color = Color::from(0, 0, 0, 255);
 }
 
-/*
-impl Color {
-	pub const INDIANRED: Color = Color::from(0.8039216, 0.36078432, 0.36078432, 1.0);
-	pub const LIGHTCORAL: Color = Color::from(0.9411765, 0.5019608, 0.5019608, 1.0);
-	pub const SALMON: Color = Color::from(0.98039216, 0.5019608, 0.44705883, 1.0);
-	pub const DARKSALMON: Color = Color::from(0.9137255, 0.5882353, 0.47843137, 1.0);
-	pub const LIGHTSALMON: Color = Color::from(1.0, 0.627451, 0.47843137, 1.0);
-	pub const CRIMSON: Color = Color::from(0.8627451, 0.078431375, 0.23529412, 1.0);
-	pub const RED: Color = Color::from(1.0, 0.0, 0.0, 1.0);
-	pub const FIREBRICK: Color = Color::from(0.69803923, 0.13333334, 0.13333334, 1.0);
-	pub const DARKRED: Color = Color::from(0.54509807, 0.0, 0.0, 1.0);
-	pub const PINK: Color = Color::from(1.0, 0.7529412, 0.79607844, 1.0);
-	pub const LIGHTPINK: Color = Color::from(1.0, 0.7137255, 0.75686276, 1.0);
-	pub const HOTPINK: Color = Color::from(1.0, 0.4117647, 0.7058824, 1.0);
-	pub const DEEPPINK: Color = Color::from(1.0, 0.078431375, 0.5764706, 1.0);
-	pub const MEDIUMVIOLETRED: Color = Color::from(0.78039217, 0.08235294, 0.52156866, 1.0);
-	pub const PALEVIOLETRED: Color = Color::from(0.85882354, 0.4392157, 0.5764706, 1.0);
-	pub const CORAL: Color = Color::from(1.0, 0.49803922, 0.3137255, 1.0);
-	pub const TOMATO: Color = Color::from(1.0, 0.3882353, 0.2784314, 1.0);
-	pub const ORANGERED: Color = Color::from(1.0, 0.27058825, 0.0, 1.0);
-	pub const DARKORANGE: Color = Color::from(1.0, 0.54901963, 0.0, 1.0);
-	pub const ORANGE: Color = Color::from(1.0, 0.64705884, 0.0, 1.0);
-	pub const GOLD: Color = Color::from(1.0, 0.84313726, 0.0, 1.0);
-	pub const YELLOW: Color = Color::from(1.0, 1.0, 0.0, 1.0);
-	pub const LIGHTYELLOW: Color = Color::from(1.0, 1.0, 0.8784314, 1.0);
-	pub const LEMONCHIFFON: Color = Color::from(1.0, 0.98039216, 0.8039216, 1.0);
-	pub const LIGHTGOLDENRODYELLOW: Color = Color::from(0.98039216, 0.98039216, 0.8235294, 1.0);
-	pub const PAPAYAWHIP: Color = Color::from(1.0, 0.9372549, 0.8352941, 1.0);
-	pub const MOCCASIN: Color = Color::from(1.0, 0.89411765, 0.70980394, 1.0);
-	pub const PEACHPUFF: Color = Color::from(1.0, 0.85490197, 0.7254902, 1.0);
-	pub const PALEGOLDENROD: Color = Color::from(0.93333334, 0.9098039, 0.6666667, 1.0);
-	pub const KHAKI: Color = Color::from(0.9411765, 0.9019608, 0.54901963, 1.0);
-	pub const DARKKHAKI: Color = Color::from(0.7411765, 0.7176471, 0.41960785, 1.0);
-	pub const LAVENDER: Color = Color::from(0.9019608, 0.9019608, 0.98039216, 1.0);
-	pub const THISTLE: Color = Color::from(0.84705883, 0.7490196, 0.84705883, 1.0);
-	pub const PLUM: Color = Color::from(0.8666667, 0.627451, 0.8666667, 1.0);
-	pub const VIOLET: Color = Color::from(0.93333334, 0.50980395, 0.93333334, 1.0);
-	pub const ORCHID: Color = Color::from(0.85490197, 0.4392157, 0.8392157, 1.0);
-	pub const FUCHSIA: Color = Color::from(1.0, 0.0, 1.0, 1.0);
-	pub const MAGENTA: Color = Color::from(1.0, 0.0, 1.0, 1.0);
-	pub const MEDIUMORCHID: Color = Color::from(0.7294118, 0.33333334, 0.827451, 1.0);
-	pub const MEDIUMPURPLE: Color = Color::from(0.5764706, 0.4392157, 0.85882354, 1.0);
-	pub const REBECCAPURPLE: Color = Color::from(0.4, 0.2, 0.6, 1.0);
-	pub const BLUEVIOLET: Color = Color::from(0.5411765, 0.16862746, 0.8862745, 1.0);
-	pub const DARKVIOLET: Color = Color::from(0.5803922, 0.0, 0.827451, 1.0);
-	pub const DARKORCHID: Color = Color::from(0.6, 0.19607843, 0.8, 1.0);
-	pub const DARKMAGENTA: Color = Color::from(0.54509807, 0.0, 0.54509807, 1.0);
-	pub const PURPLE: Color = Color::from(0.5019608, 0.0, 0.5019608, 1.0);
-	pub const INDIGO: Color = Color::from(0.29411766, 0.0, 0.50980395, 1.0);
-	pub const SLATEBLUE: Color = Color::from(0.41568628, 0.3529412, 0.8039216, 1.0);
-	pub const DARKSLATEBLUE: Color = Color::from(0.28235295, 0.23921569, 0.54509807, 1.0);
-	pub const MEDIUMSLATEBLUE: Color = Color::from(0.48235294, 0.40784314, 0.93333334, 1.0);
-	pub const GREENYELLOW: Color = Color::from(0.6784314, 1.0, 0.18431373, 1.0);
-	pub const CHARTREUSE: Color = Color::from(0.49803922, 1.0, 0.0, 1.0);
-	pub const LAWNGREEN: Color = Color::from(0.4862745, 0.9882353, 0.0, 1.0);
-	pub const LIME: Color = Color::from(0.0, 1.0, 0.0, 1.0);
-	pub const LIMEGREEN: Color = Color::from(0.19607843, 0.8039216, 0.19607843, 1.0);
-	pub const PALEGREEN: Color = Color::from(0.59607846, 0.9843137, 0.59607846, 1.0);
-	pub const LIGHTGREEN: Color = Color::from(0.5647059, 0.93333334, 0.5647059, 1.0);
-	pub const MEDIUMSPRINGGREEN: Color = Color::from(0.0, 0.98039216, 0.6039216, 1.0);
-	pub const SPRINGGREEN: Color = Color::from(0.0, 1.0, 0.49803922, 1.0);
-	pub const MEDIUMSEAGREEN: Color = Color::from(0.23529412, 0.7019608, 0.44313726, 1.0);
-	pub const SEAGREEN: Color = Color::from(0.18039216, 0.54509807, 0.34117648, 1.0);
-	pub const FORESTGREEN: Color = Color::from(0.13333334, 0.54509807, 0.13333334, 1.0);
-	pub const GREEN: Color = Color::from(0.0, 0.5019608, 0.0, 1.0);
-	pub const DARKGREEN: Color = Color::from(0.0, 0.39215687, 0.0, 1.0);
-	pub const YELLOWGREEN: Color = Color::from(0.6039216, 0.8039216, 0.19607843, 1.0);
-	pub const OLIVEDRAB: Color = Color::from(0.41960785, 0.5568628, 0.13725491, 1.0);
-	pub const OLIVE: Color = Color::from(0.5019608, 0.5019608, 0.0, 1.0);
-	pub const DARKOLIVEGREEN: Color = Color::from(0.33333334, 0.41960785, 0.18431373, 1.0);
-	pub const MEDIUMAQUAMARINE: Color = Color::from(0.4, 0.8039216, 0.6666667, 1.0);
-	pub const DARKSEAGREEN: Color = Color::from(0.56078434, 0.7372549, 0.54509807, 1.0);
-	pub const LIGHTSEAGREEN: Color = Color::from(0.1254902, 0.69803923, 0.6666667, 1.0);
-	pub const DARKCYAN: Color = Color::from(0.0, 0.54509807, 0.54509807, 1.0);
-	pub const TEAL: Color = Color::from(0.0, 0.5019608, 0.5019608, 1.0);
-	pub const AQUA: Color = Color::from(0.0, 1.0, 1.0, 1.0);
-	pub const CYAN: Color = Color::from(0.0, 1.0, 1.0, 1.0);
-	pub const LIGHTCYAN: Color = Color::from(0.8784314, 1.0, 1.0, 1.0);
-	pub const PALETURQUOISE: Color = Color::from(0.6862745, 0.93333334, 0.93333334, 1.0);
-	pub const AQUAMARINE: Color = Color::from(0.49803922, 1.0, 0.83137256, 1.0);
-	pub const TURQUOISE: Color = Color::from(0.2509804, 0.8784314, 0.8156863, 1.0);
-	pub const MEDIUMTURQUOISE: Color = Color::from(0.28235295, 0.81960785, 0.8, 1.0);
-	pub const DARKTURQUOISE: Color = Color::from(0.0, 0.80784315, 0.81960785, 1.0);
-	pub const CADETBLUE: Color = Color::from(0.37254903, 0.61960787, 0.627451, 1.0);
-	pub const STEELBLUE: Color = Color::from(0.27450982, 0.50980395, 0.7058824, 1.0);
-	pub const LIGHTSTEELBLUE: Color = Color::from(0.6901961, 0.76862746, 0.87058824, 1.0);
-	pub const POWDERBLUE: Color = Color::from(0.6901961, 0.8784314, 0.9019608, 1.0);
-	pub const LIGHTBLUE: Color = Color::from(0.6784314, 0.84705883, 0.9019608, 1.0);
-	pub const SKYBLUE: Color = Color::from(0.5294118, 0.80784315, 0.92156863, 1.0);
-	pub const LIGHTSKYBLUE: Color = Color::from(0.5294118, 0.80784315, 0.98039216, 1.0);
-	pub const DEEPSKYBLUE: Color = Color::from(0.0, 0.7490196, 1.0, 1.0);
-	pub const DODGERBLUE: Color = Color::from(0.11764706, 0.5647059, 1.0, 1.0);
-	pub const CORNFLOWERBLUE: Color = Color::from(0.39215687, 0.58431375, 0.92941177, 1.0);
-	pub const ROYALBLUE: Color = Color::from(0.25490198, 0.4117647, 0.88235295, 1.0);
-	pub const BLUE: Color = Color::from(0.0, 0.0, 1.0, 1.0);
-	pub const MEDIUMBLUE: Color = Color::from(0.0, 0.0, 0.8039216, 1.0);
-	pub const DARKBLUE: Color = Color::from(0.0, 0.0, 0.54509807, 1.0);
-	pub const NAVY: Color = Color::from(0.0, 0.0, 0.5019608, 1.0);
-	pub const MIDNIGHTBLUE: Color = Color::from(0.09803922, 0.09803922, 0.4392157, 1.0);
-	pub const CORNSILK: Color = Color::from(1.0, 0.972549, 0.8627451, 1.0);
-	pub const BLANCHEDALMOND: Color = Color::from(1.0, 0.92156863, 0.8039216, 1.0);
-	pub const BISQUE: Color = Color::from(1.0, 0.89411765, 0.76862746, 1.0);
-	pub const NAVAJOWHITE: Color = Color::from(1.0, 0.87058824, 0.6784314, 1.0);
-	pub const WHEAT: Color = Color::from(0.9607843, 0.87058824, 0.7019608, 1.0);
-	pub const BURLYWOOD: Color = Color::from(0.87058824, 0.72156864, 0.5294118, 1.0);
-	pub const TAN: Color = Color::from(0.8235294, 0.7058824, 0.54901963, 1.0);
-	pub const ROSYBROWN: Color = Color::from(0.7372549, 0.56078434, 0.56078434, 1.0);
-	pub const SANDYBROWN: Color = Color::from(0.95686275, 0.6431373, 0.3764706, 1.0);
-	pub const GOLDENROD: Color = Color::from(0.85490197, 0.64705884, 0.1254902, 1.0);
-	pub const DARKGOLDENROD: Color = Color::from(0.72156864, 0.5254902, 0.043137256, 1.0);
-	pub const PERU: Color = Color::from(0.8039216, 0.52156866, 0.24705882, 1.0);
-	pub const CHOCOLATE: Color = Color::from(0.8235294, 0.4117647, 0.11764706, 1.0);
-	pub const SADDLEBROWN: Color = Color::from(0.54509807, 0.27058825, 0.07450981, 1.0);
-	pub const SIENNA: Color = Color::from(0.627451, 0.32156864, 0.1764706, 1.0);
-	pub const BROWN: Color = Color::from(0.64705884, 0.16470589, 0.16470589, 1.0);
-	pub const MAROON: Color = Color::from(0.5019608, 0.0, 0.0, 1.0);
-	pub const WHITE: Color = Color::from(1.0, 1.0, 1.0, 1.0);
-	pub const SNOW: Color = Color::from(1.0, 0.98039216, 0.98039216, 1.0);
-	pub const HONEYDEW: Color = Color::from(0.9411765, 1.0, 0.9411765, 1.0);
-	pub const MINTCREAM: Color = Color::from(0.9607843, 1.0, 0.98039216, 1.0);
-	pub const AZURE: Color = Color::from(0.9411765, 1.0, 1.0, 1.0);
-	pub const ALICEBLUE: Color = Color::from(0.9411765, 0.972549, 1.0, 1.0);
-	pub const GHOSTWHITE: Color = Color::from(0.972549, 0.972549, 1.0, 1.0);
-	pub const WHITESMOKE: Color = Color::from(0.9607843, 0.9607843, 0.9607843, 1.0);
-	pub const SEASHELL: Color = Color::from(1.0, 0.9607843, 0.93333334, 1.0);
-	pub const BEIGE: Color = Color::from(0.9607843, 0.9607843, 0.8627451, 1.0);
-	pub const OLDLACE: Color = Color::from(0.99215686, 0.9607843, 0.9019608, 1.0);
-	pub const FLORALWHITE: Color = Color::from(1.0, 0.98039216, 0.9411765, 1.0);
-	pub const IVORY: Color = Color::from(1.0, 1.0, 0.9411765, 1.0);
-	pub const ANTIQUEWHITE: Color = Color::from(0.98039216, 0.92156863, 0.84313726, 1.0);
-	pub const LINEN: Color = Color::from(0.98039216, 0.9411765, 0.9019608, 1.0);
-	pub const LAVENDERBLUSH: Color = Color::from(1.0, 0.9411765, 0.9607843, 1.0);
-	pub const MISTYROSE: Color = Color::from(1.0, 0.89411765, 0.88235295, 1.0);
-	pub const GAINSBORO: Color = Color::from(0.8627451, 0.8627451, 0.8627451, 1.0);
-	pub const LIGHTGRAY: Color = Color::from(0.827451, 0.827451, 0.827451, 1.0);
-	pub const SILVER: Color = Color::from(0.7529412, 0.7529412, 0.7529412, 1.0);
-	pub const DARKGRAY: Color = Color::from(0.6627451, 0.6627451, 0.6627451, 1.0);
-	pub const GRAY: Color = Color::from(0.5019608, 0.5019608, 0.5019608, 1.0);
-	pub const DIMGRAY: Color = Color::from(0.4117647, 0.4117647, 0.4117647, 1.0);
-	pub const LIGHTSLATEGRAY: Color = Color::from(0.46666667, 0.53333336, 0.6, 1.0);
-	pub const SLATEGRAY: Color = Color::from(0.4392157, 0.5019608, 0.5647059, 1.0);
-	pub const DARKSLATEGRAY: Color = Color::from(0.18431373, 0.30980393, 0.30980393, 1.0);
-	pub const BLACK: Color = Color::from(0.0, 0.0, 0.0, 1.0);
-}
-*/
-
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -512,6 +392,27 @@ mod tests {
 	}
 
 	#[test]
+	fn color_unit_interval() {
+		let color = Color::from(255, 0, 255, 255);
+		let unit_interval = color.unit_interval();
+		assert_eq!(unit_interval, [1.0, 0.0, 1.0, 1.0]);
+	}
+
+	#[test]
+	fn color_rgb() {
+		let color = Color::from(255, 0, 255, 255);
+		let rgb = color.rgb();
+		assert_eq!(rgb, [255.0, 0.0, 255.0]);
+	}
+
+	#[test]
+	fn color_rgba() {
+		let color = Color::from(255, 0, 255, 255);
+		let rgb = color.rgba();
+		assert_eq!(rgb, [255.0, 0.0, 255.0, 255.0]);
+	}
+
+	#[test]
 	fn color_set() {
 		let mut color = Color::new();
 		color.set(28.0, 25.0, 39.0, 255.0);
@@ -519,24 +420,31 @@ mod tests {
 	}
 
 	#[test]
-	fn color_unit_interval() {
-		let color = Color::from(255, 0, 255, 255);
-		let unit_interval = color.unit_interval();
-		assert_eq!(unit_interval, (1.0, 0.0, 1.0, 1.0));
+	fn color_self_add() {
+		let mut color = Color::from(90, 100, 110, 120);
+		color.add_num(10.0, 10.0, 10.0, 10.0);
+		assert_eq!(color, Color { r: 100.0, g: 110.0, b: 120.0, a: 130.0 });
 	}
 
 	#[test]
-	fn color_rgb() {
-		let color = Color::from(255, 0, 255, 255);
-		let rgb = color.rgb();
-		assert_eq!(rgb, (255.0, 0.0, 255.0));
+	fn color_self_sub() {
+		let mut color = Color::from(90, 100, 110, 120);
+		color.sub_num(10.0, 10.0, 10.0, 10.0);
+		assert_eq!(color, Color { r: 80.0, g: 90.0, b: 100.0, a: 110.0 });
 	}
 
 	#[test]
-	fn color_rgba() {
-		let color = Color::from(255, 0, 255, 255);
-		let rgb = color.rgba();
-		assert_eq!(rgb, (255.0, 0.0, 255.0, 255.0));
+	fn color_self_mul() {
+		let mut color = Color::from(50, 100, 30, 60);
+		color.mul_num(2.0, 1.0, 3.0, 2.0);
+		assert_eq!(color, Color { r: 100.0, g: 100.0, b: 90.0, a: 120.0 });
+	}
+
+	#[test]
+	fn color_self_div() {
+		let mut color = Color::from(50, 100, 30, 60);
+		color.div_num(2.0, 1.0, 3.0, 2.0);
+		assert_eq!(color, Color { r: 25.0, g: 100.0, b: 10.0, a: 30.0 });
 	}
 
 	#[test]
@@ -615,5 +523,19 @@ mod tests {
 		let color2 = Color::from(2, 1, 4, 1);
 		color1 /= color2;
 		assert_eq!(color1, Color { r: 50.0, g: 0.0, b: 50.0, a: 255.0 });
+	}
+
+	#[test]
+	fn color_mul_num_assign() {
+		let mut color = Color::from(50, 0, 100, 100);
+		color *= 2.0;
+		assert_eq!(color, Color { r: 100.0, g: 0.0, b: 200.0, a: 200.0 });
+	}
+
+	#[test]
+	fn color_div_num_assign() {
+		let mut color = Color::from(100, 0, 200, 200);
+		color /= 2.0;
+		assert_eq!(color, Color { r: 50.0, g: 0.0, b: 100.0, a: 100.0 });
 	}
 }

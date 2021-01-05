@@ -1,4 +1,8 @@
-pub mod Matrix;
+pub(crate) mod vector;
+pub(crate) mod matrix;
+
+pub use vector::*;
+pub use matrix::*;
 
 // Math Constants
 pub const DEG_RAD: f32 = std::f32::consts::PI / 180.0;
@@ -32,106 +36,9 @@ pub fn lerp(start: f32, end: f32, t: f32) -> f32 {
     start * (1.0 - t) + end * t
 }
 
-pub struct Matrix4x4 {
-    pub identity: [[f32; 4]; 4],
-    pub translation: Vector3D,
-}
-
-impl Matrix4x4 {
-    pub fn new() -> Matrix4x4 {
-        let identity: [[f32; 4]; 4] = [
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0],
-        ];
-        Matrix4x4 { identity, translation: Vector3D::new() }
-    }
-
-    pub fn is_identity(self) -> bool {
-        (self.identity[0][0] == 1.0) && (self.identity[1][1] == 1.0) && (self.identity[2][2] == 1.0) && (self.identity[3][3] == 1.0) &&
-        (self.identity[0][1] == 0.0) && (self.identity[0][2] == 0.0) && (self.identity[0][3] == 0.0) &&
-        (self.identity[1][0] == 0.0) && (self.identity[1][2] == 0.0) && (self.identity[1][3] == 0.0) &&
-        (self.identity[2][0] == 0.0) && (self.identity[2][1] == 0.0) && (self.identity[2][3] == 0.0) &&
-        (self.identity[3][0] == 0.0) && (self.identity[3][1] == 0.0) && (self.identity[3][2] == 0.0)
-    }
-
-    pub fn mult(self, other: Matrix4x4) -> Matrix4x4 {
-        let mut mat = Matrix4x4::new();
-        for i in 0..4 {
-            for j in 0..4 {
-                let mut sum = 0.0;
-                for k in 0..4 {
-                    sum = sum + self.identity[i][j] * other.identity[k][j];
-                }
-                mat.identity[i][j] = sum;
-            }
-        }
-        mat
-    }
-
-    pub const fn array(self) -> [f32; 16] {
-        [
-            self.identity[0][0], self.identity[0][1], self.identity[0][2], self.identity[0][3],
-            self.identity[1][0], self.identity[1][1], self.identity[1][2], self.identity[1][3],
-            self.identity[2][0], self.identity[2][1], self.identity[2][2], self.identity[2][3],
-            self.identity[3][0], self.identity[3][1], self.identity[3][2], self.identity[3][3],
-        ]
-    }
-}
-
-#[derive(Copy, Clone, Debug)]
-pub struct Vector2D {
-    pub x: f32,
-    pub y: f32,
-}
-
-impl Vector2D {
-    pub const ZERO: Vector2D = Vector2D { x: 0.0, y: 0.0 };
-
-    pub const fn new() -> Vector2D {
-        Vector2D {x: 0.0, y: 0.0}
-    }
-
-    pub const fn from(x: f32, y: f32) -> Vector2D {
-        Vector2D {x, y}
-    }
-
-    pub fn set(mut self, x: f32, y: f32) -> Vector2D {
-        self.x = x;
-        self.y = y;
-        self
-    }
-}
-
-pub struct Vector3D {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
-}
-
-impl Vector3D {
-    pub const fn new() -> Vector3D {
-        Vector3D {x: 0.0, y: 0.0, z: 0.0}
-    }
-
-    pub const fn from(x: f32, y: f32, z: f32) -> Vector3D {
-        Vector3D {x, y, z}
-    }
-
-    pub fn set(mut self, x: f32, y: f32, z: f32) -> Vector3D {
-        self.x = x;
-        self.y = y;
-        self.z = z;
-        self
-    }
-}
-
 pub enum MatrixMath4D {
 
 }
-
-
 
 pub mod Debug {
     pub mod Random {

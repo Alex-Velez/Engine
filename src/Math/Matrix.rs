@@ -1,8 +1,55 @@
 use crate::{ Scale3D, Rotation2D,
-	Math::{Matrix4x4, Vector3D}
+	Math::{Vector3D}
 };
 
+#[derive(Copy, Clone, Debug)]
+pub struct Matrix4x4 {
+    pub identity: [[f32; 4]; 4],
+    pub translation: Vector3D,
+}
+
 impl Matrix4x4 {
+    pub fn new() -> Matrix4x4 {
+        let identity: [[f32; 4]; 4] = [
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ];
+        Matrix4x4 { identity, translation: Vector3D::new() }
+    }
+
+    pub fn is_identity(self) -> bool {
+        (self.identity[0][0] == 1.0) && (self.identity[1][1] == 1.0) && (self.identity[2][2] == 1.0) && (self.identity[3][3] == 1.0) &&
+        (self.identity[0][1] == 0.0) && (self.identity[0][2] == 0.0) && (self.identity[0][3] == 0.0) &&
+        (self.identity[1][0] == 0.0) && (self.identity[1][2] == 0.0) && (self.identity[1][3] == 0.0) &&
+        (self.identity[2][0] == 0.0) && (self.identity[2][1] == 0.0) && (self.identity[2][3] == 0.0) &&
+        (self.identity[3][0] == 0.0) && (self.identity[3][1] == 0.0) && (self.identity[3][2] == 0.0)
+    }
+
+    pub fn mult(self, other: Matrix4x4) -> Matrix4x4 {
+        let mut mat = Matrix4x4::new();
+        for i in 0..4 {
+            for j in 0..4 {
+                let mut sum = 0.0;
+                for k in 0..4 {
+                    sum = sum + self.identity[i][j] * other.identity[k][j];
+                }
+                mat.identity[i][j] = sum;
+            }
+        }
+        mat
+    }
+
+    pub const fn array(self) -> [f32; 16] {
+        [
+            self.identity[0][0], self.identity[0][1], self.identity[0][2], self.identity[0][3],
+            self.identity[1][0], self.identity[1][1], self.identity[1][2], self.identity[1][3],
+            self.identity[2][0], self.identity[2][1], self.identity[2][2], self.identity[2][3],
+            self.identity[3][0], self.identity[3][1], self.identity[3][2], self.identity[3][3],
+        ]
+    }
+
 	pub const fn create_scale(scale: Scale3D) -> Matrix4x4 {
 		let mut identity: [[f32; 4]; 4] = [
 			[1.0, 0.0, 0.0, 0.0],

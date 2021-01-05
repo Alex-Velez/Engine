@@ -44,10 +44,10 @@ pub mod Object;
 pub mod Log;
 
 mod Global;
-mod Vector;
 
+// Impls
 pub use Global::*;
-pub use Vector::*;
-
-pub use Global::color::*;
+/*pub use Global::color::*;
 pub use Global::rotation::*;
+pub use Math::vector::*;
+pub use Math::matrix::*;*/
