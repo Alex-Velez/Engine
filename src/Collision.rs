@@ -1,4 +1,4 @@
-use super::{
+use crate::{
 	Position2D,
 	Rotation2D,
 };
