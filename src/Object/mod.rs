@@ -1,16 +1,15 @@
-use super::{
+use crate::{
 	Transform2D,
-	Position2D,
-	Size2D,
 	Scale3D,
 	Sprite2D,
 	Animation2D,
 	Collision,
 	Color,
-	Math::{self, Matrix4x4, Vector2D},
+	Math::{Matrix4x4, Vector2D},
 	Window,
 };
 
+#[derive(Copy, Clone, Debug)]
 pub struct Camera2D {
 	pub focus_position: Vector2D,
 	pub zoom: f32,
@@ -30,10 +29,10 @@ impl Camera2D {
 		let right = self.focus_position.x + window.size.width / 2.0;
 		let top = self.focus_position.y - window.size.height / 2.0;
 		let bottom = self.focus_position.y + window.size.height / 2.0;
-	
+
 		let orthoMatrix: Matrix4x4 = Matrix4x4::create_orthographic_off_center(left, right, bottom, top, 0.01, 100.0);
 		let zoomMatrix: Matrix4x4 = Matrix4x4::create_scale(Scale3D::from(self.zoom, self.zoom, self.zoom));
-	
+
 		orthoMatrix.mult(zoomMatrix)
 	}
 }
@@ -87,4 +86,3 @@ pub struct RigidBody2D {
 	pub friction: f32,
 	pub gravity_scale: f32,
 }
-

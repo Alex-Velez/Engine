@@ -4,6 +4,15 @@ use crate::{
 	Color,
 };
 
+/*
+TODO: add shape enum
+
+enum Shape::
+impl Shape {
+	match shape
+}
+*/
+
 pub struct Triangle {
 	pub points: (Position2D, Position2D, Position2D),
 	pub offset: Position2D,

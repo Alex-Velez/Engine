@@ -15,8 +15,8 @@
 //! ## Basic Project Template
 //!
 //! ```rust,no_run
-//! use Engine::{self, Window, Size2D, Color};
-//! 
+//! use Engine::{Window, Size2D, Color};
+//!
 //! fn main() {
 //!		let window = Window::from("TestGame", Size2D::from(856.0, 482.0), Color::BLACK);
 //!
@@ -36,44 +36,18 @@
 pub(crate) extern crate glfw;
 pub(crate) extern crate gl;
 
-//pub(crate) use shader::Shader;
-
 pub mod Collision;
 pub mod Visual;
-pub mod Shader;
+pub mod shader;
 pub mod Math;
-pub(crate) mod GL;
-pub(crate) mod Verbose;
+pub mod Object;
+pub mod Log;
 
-mod Settings;
 mod Global;
-mod Object;
-mod Vector;
 
-pub use Settings::*;
+// Impls
 pub use Global::*;
-pub use Object::*;
-pub use Vector::*;
-
-// Don't judge me!
-macro_rules! impl_cc {
-    (for $($t:ty),+) => {
-        $(impl Copy for $t {})*
-		$(impl Clone for $t { fn clone(&self) -> Self { *self } })*
-    }
-}
-
-impl_cc!(for
-	GL::Vertex,
-	Math::Vector2D,
-	Math::Vector3D,
-	Window,
-	Camera2D,
-	Color,
-	Position2D,
-	Rotation2D,
-	Scale2D,
-	Transform2D,
-	Size2D,
-	Sprite2D
-);
+/*pub use Global::color::*;
+pub use Global::rotation::*;
+pub use Math::vector::*;
+pub use Math::matrix::*;*/

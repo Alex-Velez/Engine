@@ -14,8 +14,8 @@ use std::os::raw::c_void;
 pub(crate) mod rotation;
 pub(crate) mod color;
 
-use rotation::*;
-use color::*;
+pub use rotation::*;
+pub use color::*;
 
 pub fn Run(win: Window, init: fn(), load: fn(), update: fn(), render: fn()) {
 
@@ -128,6 +128,10 @@ pub fn Run(win: Window, init: fn(), load: fn(), update: fn(), render: fn()) {
 		_delta_time = glfw.get_time() - total_elapsed_seconds;
 		total_elapsed_seconds = glfw.get_time();
 
+		// events
+        // -----
+		//process_events(&mut window, &events);
+
 		update(); // user update function
 		Update();
 
@@ -182,6 +186,45 @@ pub fn LoadContent() {
 pub fn Update() {
 
 }
+
+/*
+fn process_events(window: &mut glfw::Window, events: &Receiver<(f64, glfw::WindowEvent)>) {
+    for (_, event) in glfw::flush_messages(events) {
+        match event { // general
+            glfw::WindowEvent::FramebufferSize(width, height) => {
+                // make sure the viewport matches the new window dimensions; note that width and
+                // height will be significantly larger than specified on retina displays.
+                unsafe { gl::Viewport(0, 0, width, height) }
+            }
+            _ => {}
+		}
+		KeyboardHandler(window, event);
+    }
+}
+
+fn KeyboardHandler(window: &mut glfw::Window, event: glfw::WindowEvent) {
+	match event {
+		glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => window.set_should_close(true),
+		glfw::WindowEvent::Key(Key::W, _, Action::Press, _) => {
+			println!("Up ^");
+			unsafe { gl::ClearColor(0.2, 1.0, 0.3, 1.0); }
+		},
+		glfw::WindowEvent::Key(Key::A, _, Action::Press, _) => {
+			println!("Left <-");
+			unsafe { gl::ClearColor(1.0, 0.3, 0.3, 1.0); }
+		},
+		glfw::WindowEvent::Key(Key::S, _, Action::Press, _) => {
+			println!("Down v");
+			unsafe { gl::ClearColor(0.2, 0.3, 1.0, 1.0); }
+		},
+		glfw::WindowEvent::Key(Key::D, _, Action::Press, _) => {
+			println!("Right ->");
+			unsafe { gl::ClearColor(0.5, 0.5, 0.5, 1.0); }
+		},
+		_ => {}
+	}
+}
+*/
 
 #[derive(Clone, Copy, Debug)]
 pub struct Window {
