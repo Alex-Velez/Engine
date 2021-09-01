@@ -2,11 +2,8 @@
 //!
 //! Engine is a Rust library for creating 2D games.
 //!
-//! More specifically, Engine is a lightweight game framework for making
-//! 2D games with minimum friction. It aims to implement a simple API made
-//! for first time programmers and  game devs. It is supposed to avoid
-//! overcomplicating the game making process and focuses on getting a game
-//! running in as little time (and code) as possible.
+//! This is not meant to be a working game engine. It is
+//! just an opengl test project for educational purposes.
 //!
 //! For a fuller outline, see the README.md on Github.
 //!
@@ -18,17 +15,25 @@
 //! use Engine::{Window, Size2D, Color};
 //!
 //! fn main() {
-//!		let window = Window::from("TestGame", Size2D::from(856.0, 482.0), Color::BLACK);
+//!		let window = Window::from("Title", Size2D::from(856.0, 482.0), Color::BLACK);
 //!
-//!		Engine::Run(window, initialize, load_content, update, render);
+//!		Engine::Run(window, start, update, end);
 //!	}
 //!
-//! fn initialize() {}
-//! fn load_content() {}
-//! fn update() {}
-//! fn render() {}
+//! fn start() {
+//!     println!("Hello World!");
+//! }
+//!
+//! fn update() {
+//!    
+//! }
+//!
+//! fn end() {
+//!     println!("Goodbye World :(");
+//! }
 //! ```
 
+// * Temporary, I don't like warnings >:(
 #![allow(unused_imports)]
 #![allow(non_snake_case)]
 #![allow(dead_code)]
@@ -40,14 +45,12 @@ pub mod Collision;
 pub mod Visual;
 pub mod shader;
 pub mod Math;
-pub mod Object;
-pub mod Log;
+pub mod Debug;
 
 mod Global;
+mod Object;
 
-// Impls
+// * Global Imports
 pub use Global::*;
-/*pub use Global::color::*;
-pub use Global::rotation::*;
-pub use Math::vector::*;
-pub use Math::matrix::*;*/
+pub use Object::*;
+

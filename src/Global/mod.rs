@@ -1,11 +1,14 @@
-use crate::{Object::Camera2D, shader,
+use crate::{
+	Camera2D,
+	Debug,
 	Math::{self, Matrix4x4, Vector2D},
-	glfw::{self, Context}, 
 	gl::{self, types::*},
+	glfw::{self, Context, Action, Key},
+	shader
 };
+use image::{self, RgbaImage};
 
-//use std::sync::mpsc::Receiver;
-//use std::ffi::CString;
+use std::sync::mpsc::Receiver;
 use std::ptr;
 use std::str;
 use std::mem;
@@ -17,15 +20,14 @@ pub(crate) mod color;
 pub use rotation::*;
 pub use color::*;
 
-pub fn Run(win: Window, init: fn(), load: fn(), update: fn(), render: fn()) {
+pub fn Run(win: Window, start: fn(), update: fn(), end: fn()) {
 
-	init(); // user initialize function
-	Initialize();
+	start(); // user initialize function
+	//Initialize();
 
 	// glfw: initialize and configure
 	// ------------------------------
 	let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
-
 	glfw.window_hint(glfw::WindowHint::ContextVersion(3, 3));
 	glfw.window_hint(glfw::WindowHint::OpenGlProfile(glfw::OpenGlProfileHint::Core));
 	#[cfg(target_os = "macos")]
@@ -37,18 +39,20 @@ pub fn Run(win: Window, init: fn(), load: fn(), update: fn(), render: fn()) {
 
 	// glfw window creation
 	// --------------------
-	let (mut window, _events) = glfw
+	let (mut window, events) = glfw
 		.create_window(win.size.width as u32, win.size.height as u32, win.title, glfw::WindowMode::Windowed)
 		.expect("Failed to create GLFW window!");
 
-	println!("Window '{}' ({}, {}) was successfully built!", win.title, win.size.width, win.size.height);
+	//println!("Window '{}' ({}, {}) was successfully built!", win.title, win.size.width, win.size.height);
+	Debug::log(&["info", "window"], format!("Window '{}' ({}, {}) was successfully built!", win.title, win.size.width, win.size.height));
 
-
+	// Set window postion to center of screen
 	let (x, y) = glfw.with_primary_monitor(|_: &mut _, monitor: Option<&glfw::Monitor>| {
 		let screen = monitor.unwrap().get_workarea();
 		return ((screen.2 - win.size.width as i32) / 2, (screen.3 - win.size.height as i32) / 2);
 	});
 
+	window.set_icon_from_pixels(gen_icon());
 	window.set_pos(x, y);
 	window.set_aspect_ratio(win.aspect_ratio.numer, win.aspect_ratio.denum);
 	window.set_size_limits(
@@ -70,13 +74,13 @@ pub fn Run(win: Window, init: fn(), load: fn(), update: fn(), render: fn()) {
 
 	glfw.set_swap_interval(glfw::SwapInterval::None); // VSync off (0)
 
-	load(); // user load content function
+	//load(); // user load content function
 	// load content LoadContent();
 	// -----------
 
-	let (shaderProgram, VAO) = unsafe {
+	let (shader_program, VAO) = unsafe {
 
-		let shaderProgram = shader::Load("shaders/VertexShader.vert", "shaders/FragmentShader.frag");
+		let shader_program = shader::Load("shaders/VertexShader.vert", "shaders/FragmentShader.frag");
 
 		let (mut VBO, mut VAO) = (0, 0);
 
@@ -114,7 +118,7 @@ pub fn Run(win: Window, init: fn(), load: fn(), update: fn(), render: fn()) {
 		gl::BindBuffer(gl::ARRAY_BUFFER, 0);
 		gl::BindVertexArray(0);
 
-		(shaderProgram, VAO)
+		(shader_program, VAO)
 	};
 
 	let cam = Camera2D::from(Vector2D::from(win.size.width / 2.0, win.size.height / 2.0), 1.0);
@@ -128,20 +132,26 @@ pub fn Run(win: Window, init: fn(), load: fn(), update: fn(), render: fn()) {
 		_delta_time = glfw.get_time() - total_elapsed_seconds;
 		total_elapsed_seconds = glfw.get_time();
 
+		unsafe {
+			Math::DELTA_TIME = _delta_time;
+			Math::TOTAL_ELAPSED_SECONDS = total_elapsed_seconds;
+		}
+
 		// events
         // -----
-		//process_events(&mut window, &events);
+		process_events(&mut window, &events);
 
 		update(); // user update function
-		Update();
+		//Update();
 
 		glfw.poll_events();
 
-		render(); // user render function
+		//render(); // user render function
 		// render
 		// ------
 		unsafe {
-			gl::ClearColor(win.color.r, win.color.g, win.color.b, win.color.a);
+			let win_color = win.color.unit_interval();
+			gl::ClearColor(win_color[0], win_color[1], win_color[2], win_color[3]);
 			gl::Clear(gl::COLOR_BUFFER_BIT);
 
 			let position = Position2D::from(400.0, 300.0);
@@ -153,10 +163,10 @@ pub fn Run(win: Window, init: fn(), load: fn(), update: fn(), render: fn()) {
 			let sca = Matrix4x4::create_scale(scale);
 			let rot = Matrix4x4::create_rotation_z(rotation);
 
-			shader::SetMatrix4x4(shaderProgram, "model", sca.mult(rot).mult(trans));
+			shader::SetMatrix4x4(shader_program, "model", sca.mult(rot).mult(trans));
 
-			shader::Use(vec![shaderProgram]);
-			shader::SetMatrix4x4(shaderProgram, "projection", cam.get_projection_matrix(win));
+			shader::Use(vec![shader_program]);
+			shader::SetMatrix4x4(shader_program, "projection", cam.get_projection_matrix(win));
 
 			gl::BindVertexArray(VAO);
 			gl::DrawArrays(gl::TRIANGLES, 0, 6);
@@ -167,27 +177,14 @@ pub fn Run(win: Window, init: fn(), load: fn(), update: fn(), render: fn()) {
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		window.swap_buffers();
-		//glfw.poll_events();
+		glfw.poll_events();
 		//glfw.wait_events();
 	}
 
-	//window.close();
-	window.set_should_close(true);
+	end();
 }
 
-pub fn Initialize() {
-	
-}
 
-pub fn LoadContent() {
-
-}
-
-pub fn Update() {
-
-}
-
-/*
 fn process_events(window: &mut glfw::Window, events: &Receiver<(f64, glfw::WindowEvent)>) {
     for (_, event) in glfw::flush_messages(events) {
         match event { // general
@@ -207,24 +204,20 @@ fn KeyboardHandler(window: &mut glfw::Window, event: glfw::WindowEvent) {
 		glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => window.set_should_close(true),
 		glfw::WindowEvent::Key(Key::W, _, Action::Press, _) => {
 			println!("Up ^");
-			unsafe { gl::ClearColor(0.2, 1.0, 0.3, 1.0); }
 		},
 		glfw::WindowEvent::Key(Key::A, _, Action::Press, _) => {
 			println!("Left <-");
-			unsafe { gl::ClearColor(1.0, 0.3, 0.3, 1.0); }
 		},
 		glfw::WindowEvent::Key(Key::S, _, Action::Press, _) => {
 			println!("Down v");
-			unsafe { gl::ClearColor(0.2, 0.3, 1.0, 1.0); }
 		},
 		glfw::WindowEvent::Key(Key::D, _, Action::Press, _) => {
 			println!("Right ->");
-			unsafe { gl::ClearColor(0.5, 0.5, 0.5, 1.0); }
 		},
 		_ => {}
 	}
 }
-*/
+
 
 #[derive(Clone, Copy, Debug)]
 pub struct Window {
@@ -479,8 +472,28 @@ impl Sprite2D {
 	}
 }
 
+// todo: fix icon data generator (make it work!)
+fn gen_icon() -> Vec<glfw::PixelImage> {
+	vec![
+		// icon 1
+		glfw::PixelImage {
+			width: 100,
+			height: 100,
+			pixels: {
+				let img: RgbaImage = image::open("resources/gear.png").unwrap().into_rgba8();
+				let mut data_u8: Vec<u8> = Vec::new();
+				for rgba in img.pixels() { data_u8.append(&mut rgba.0.to_vec()); }
+				let mut data_u32: Vec<u32> = Vec::new();
+				for x in data_u8 { data_u32.push(x as u32); }
+				data_u32
+			},
+		}
+	]
+}
+
+/*
 #[derive(Copy, Clone, Debug)]
-pub struct AnimationTrigger {
+struct AnimationTrigger {
 	pub index: usize,
 	pub func: fn(),
 }
@@ -490,12 +503,31 @@ impl AnimationTrigger {
 		AnimationTrigger { index, func }
 	}
 }
+/*
+```rust
+fn pork() {
+	println!("i love pork");
+}
+
+let t1 = AnimationTrigger::from(3, pork);
+
+let anim = Animation2D::new();
+
+anim.insert_trigger(t1);
+
+```
+*/
+
+pub enum Trigger {
+	Animation,
+	None,
+}
 
 pub struct Animation2D {
 	pub sprite: Sprite2D,
 	pub index: usize,
 	pub tape: Vec<Sprite2D>,
-	pub triggers: Vec<AnimationTrigger>,
+	pub triggers: Vec<(usize, fn())>,
 	pub pause: bool,
 }
 
@@ -517,17 +549,19 @@ impl Animation2D {
 		self.sprite = self.tape[index];
 	}
 
-	pub fn insert_trigger(&mut self, trigger: AnimationTrigger) {
-		self.triggers.push(trigger);
+	pub fn insert_trigger(&mut self, index: usize, func: fn()) {
+		self.triggers.push((index, func));
 	}
 
-	pub fn next(&mut self) {
+	pub fn play(&mut self) {
 		if !self.pause {
 			self.index += 1;
 			self.sprite = self.tape[self.index];
+
+
 			for trigger in &self.triggers {
-				if trigger.index == self.index {
-					(trigger.func)();
+				if trigger.0 == self.index {
+					(trigger.1)();
 				}
 			}
 		}
@@ -536,4 +570,7 @@ impl Animation2D {
 	pub fn stop(&mut self) {
 		self.pause = true;
 	}
+
+	pub fn Trigger(index: usize, trigger: fn()) ->
 }
+*/

@@ -1,4 +1,3 @@
-#![allow(non_snake_case)]
 use Engine::{self, Window, Size2D, Color};
 
 fn main() {
@@ -7,22 +6,20 @@ fn main() {
 	//let shape0 = Engine::Visual::Triangle::new();
 
 	let win = Window::from("TestGame", Size2D::from(856.0, 482.0), Color::BLACK);
+
+
+	Engine::Run(win, start, update, end);
 	
-	Engine::Run(win, Initialize, LoadContent, Update, Render);
 }
 
-fn Initialize() {
-
+fn start() {
+	println!("Game started!");
 }
 
-fn LoadContent() {
-
-}
-
-fn Update() {
+fn update() {
 
 }
 
-fn Render() {
+fn end() {
 
 }

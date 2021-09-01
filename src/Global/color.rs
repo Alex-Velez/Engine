@@ -1,6 +1,6 @@
 use std::cmp::{Eq, PartialEq};
+use std::convert::{From, Into};
 use std::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign};
-use crate::Math::Unstable::clamp;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Color {
@@ -19,6 +19,10 @@ impl Color {
 		Color { r: r as f32, g: g as f32, b: b as f32, a: a as f32 }
 	}
 
+	pub const fn from_dec(r: f32, g: f32, b: f32, a: f32) -> Color {
+		Color { r, g, b, a }
+	}
+
 	pub fn from_unit_interval(r: f32, g: f32, b: f32, a: f32) -> Self {
 		assert!(r >= 0.0 && g >= 0.0 && b >= 0.0 && a >= 0.0);
 		assert!(r <= 1.0 && g <= 1.0 && b <= 1.0 && a <= 1.0);
@@ -29,47 +33,43 @@ impl Color {
 		[self.r / 255.0, self.g / 255.0, self.b / 255.0, self.a / 255.0]
 	}
 
-	pub const fn rgb(self) -> [f32; 3] {
-		[self.r, self.g, self.b]
-	}
-
 	pub const fn rgba(self) -> [f32; 4] {
 		[self.r, self.g, self.b, self.a]
 	}
 
 	pub fn set(&mut self, r: f32, g: f32, b: f32, a: f32) {
-		self.r = clamp(r, 0.0, 255.0);
-		self.g = clamp(g, 0.0, 255.0);
-		self.b = clamp(b, 0.0, 255.0);
-		self.a = clamp(a, 0.0, 255.0);
+		self.r = r.clamp(0.0, 255.0);
+		self.g = g.clamp(0.0, 255.0);
+		self.b = b.clamp(0.0, 255.0);
+		self.a = a.clamp(0.0, 255.0);
 	}
 
 	pub fn add_num(&mut self, r: f32, g: f32, b: f32, a: f32) {
-		self.r = clamp(self.r + r, 0.0, 255.0);
-		self.g = clamp(self.g + g, 0.0, 255.0);
-		self.b = clamp(self.b + b, 0.0, 255.0);
-		self.a = clamp(self.a + a, 0.0, 255.0);
+		self.r = (self.r + r).clamp(0.0, 255.0);
+		self.g = (self.g + g).clamp(0.0, 255.0);
+		self.b = (self.b + b).clamp(0.0, 255.0);
+		self.a = (self.a + a).clamp(0.0, 255.0);
 	}
 
 	pub fn sub_num(&mut self, r: f32, g: f32, b: f32, a: f32) {
-		self.r = clamp(self.r - r, 0.0, 255.0);
-		self.g = clamp(self.g - g, 0.0, 255.0);
-		self.b = clamp(self.b - b, 0.0, 255.0);
-		self.a = clamp(self.a - a, 0.0, 255.0);
+		self.r = (self.r - r).clamp(0.0, 255.0);
+		self.g = (self.g - g).clamp(0.0, 255.0);
+		self.b = (self.b - b).clamp(0.0, 255.0);
+		self.a = (self.a - a).clamp(0.0, 255.0);
 	}
 
 	pub fn mul_num(&mut self, r: f32, g: f32, b: f32, a: f32) {
-		self.r = clamp(self.r * r, 0.0, 255.0);
-		self.g = clamp(self.g * g, 0.0, 255.0);
-		self.b = clamp(self.b * b, 0.0, 255.0);
-		self.a = clamp(self.a * a, 0.0, 255.0);
+		self.r = (self.r * r).clamp(0.0, 255.0);
+		self.g = (self.g * g).clamp(0.0, 255.0);
+		self.b = (self.b * b).clamp(0.0, 255.0);
+		self.a = (self.a * a).clamp(0.0, 255.0);
 	}
 
 	pub fn div_num(&mut self, r: f32, g: f32, b: f32, a: f32) {
-		self.r = clamp(self.r / r, 0.0, 255.0);
-		self.g = clamp(self.g / g, 0.0, 255.0);
-		self.b = clamp(self.b / b, 0.0, 255.0);
-		self.a = clamp(self.a / a, 0.0, 255.0);
+		self.r = (self.r / r).clamp(0.0, 255.0);
+		self.g = (self.g / g).clamp(0.0, 255.0);
+		self.b = (self.b / b).clamp(0.0, 255.0);
+		self.a = (self.a / a).clamp(0.0, 255.0);
 	}
 }
 
@@ -86,20 +86,20 @@ impl Add for Color {
 
 	fn add(self, other: Color) -> Color {
 		Color {
-			r: clamp(self.r + other.r, 0.0, 255.0),
-			g: clamp(self.g + other.g, 0.0, 255.0),
-			b: clamp(self.b + other.b, 0.0, 255.0),
-			a: clamp(self.a + other.a, 0.0, 255.0),
+			r: (self.r + other.r).clamp(0.0, 255.0),
+			g: (self.g + other.g).clamp(0.0, 255.0),
+			b: (self.b + other.b).clamp(0.0, 255.0),
+			a: (self.a + other.a).clamp(0.0, 255.0),
 		}
 	}
 }
 
 impl AddAssign for Color {
 	fn add_assign(&mut self, other: Color) {
-		self.r = clamp(self.r + other.r, 0.0, 255.0);
-		self.g = clamp(self.g + other.g, 0.0, 255.0);
-		self.b = clamp(self.b + other.b, 0.0, 255.0);
-		self.a = clamp(self.a + other.a, 0.0, 255.0);
+		self.r = (self.r + other.r).clamp(0.0, 255.0);
+		self.g = (self.g + other.g).clamp(0.0, 255.0);
+		self.b = (self.b + other.b).clamp(0.0, 255.0);
+		self.a = (self.a + other.a).clamp(0.0, 255.0);
 	}
 }
 
@@ -108,20 +108,20 @@ impl Sub for Color {
 
 	fn sub(self, other: Color) -> Color {
 		Color {
-			r: clamp(self.r - other.r, 0.0, 255.0),
-			g: clamp(self.g - other.g, 0.0, 255.0),
-			b: clamp(self.b - other.b, 0.0, 255.0),
-			a: clamp(self.a - other.a, 0.0, 255.0),
+			r: (self.r - other.r).clamp(0.0, 255.0),
+			g: (self.g - other.g).clamp(0.0, 255.0),
+			b: (self.b - other.b).clamp(0.0, 255.0),
+			a: (self.a - other.a).clamp(0.0, 255.0),
 		}
 	}
 }
 
 impl SubAssign for Color {
 	fn sub_assign(&mut self, other: Color) {
-		self.r = clamp(self.r - other.r, 0.0, 255.0);
-		self.g = clamp(self.g - other.g, 0.0, 255.0);
-		self.b = clamp(self.b - other.b, 0.0, 255.0);
-		self.a = clamp(self.a - other.a, 0.0, 255.0);
+		self.r = (self.r - other.r).clamp(0.0, 255.0);
+		self.g = (self.g - other.g).clamp(0.0, 255.0);
+		self.b = (self.b - other.b).clamp(0.0, 255.0);
+		self.a = (self.a - other.a).clamp(0.0, 255.0);
 	}
 }
 
@@ -130,20 +130,20 @@ impl Mul for Color {
 
 	fn mul(self, other: Color) -> Color {
 		Color {
-			r: clamp(self.r * other.r, 0.0, 255.0),
-			g: clamp(self.g * other.g, 0.0, 255.0),
-			b: clamp(self.b * other.b, 0.0, 255.0),
-			a: clamp(self.a * other.a, 0.0, 255.0),
+			r: (self.r * other.r).clamp(0.0, 255.0),
+			g: (self.g * other.g).clamp(0.0, 255.0),
+			b: (self.b * other.b).clamp(0.0, 255.0),
+			a: (self.a * other.a).clamp(0.0, 255.0),
 		}
 	}
 }
 
 impl MulAssign for Color {
 	fn mul_assign(&mut self, other: Color) {
-		self.r = clamp(self.r * other.r, 0.0, 255.0);
-		self.g = clamp(self.g * other.g, 0.0, 255.0);
-		self.b = clamp(self.b * other.b, 0.0, 255.0);
-		self.a = clamp(self.a * other.a, 0.0, 255.0);
+		self.r = (self.r * other.r).clamp(0.0, 255.0);
+		self.g = (self.g * other.g).clamp(0.0, 255.0);
+		self.b = (self.b * other.b).clamp(0.0, 255.0);
+		self.a = (self.a * other.a).clamp(0.0, 255.0);
 	}
 }
 
@@ -155,10 +155,10 @@ impl <T> Mul<T> for Color
 		let scale = value.into();
 
 		Color {
-			r: clamp(self.r * scale, 0.0, 255.0),
-			g: clamp(self.g * scale, 0.0, 255.0),
-			b: clamp(self.b * scale, 0.0, 255.0),
-			a: clamp(self.a * scale, 0.0, 255.0),
+			r: (self.r * scale).clamp(0.0, 255.0),
+			g: (self.g * scale).clamp(0.0, 255.0),
+			b: (self.b * scale).clamp(0.0, 255.0),
+			a: (self.a * scale).clamp(0.0, 255.0),
 		}
 	}
 }
@@ -168,10 +168,10 @@ impl <T> MulAssign<T> for Color
 	fn mul_assign(&mut self, value: T) {
 		let scale = value.into();
 
-		self.r = clamp(self.r * scale, 0.0, 255.0);
-		self.g = clamp(self.g * scale, 0.0, 255.0);
-		self.b = clamp(self.b * scale, 0.0, 255.0);
-		self.a = clamp(self.a * scale, 0.0, 255.0);
+		self.r = (self.r * scale).clamp(0.0, 255.0);
+		self.g = (self.g * scale).clamp(0.0, 255.0);
+		self.b = (self.b * scale).clamp(0.0, 255.0);
+		self.a = (self.a * scale).clamp(0.0, 255.0);
 	}
 }
 
@@ -180,20 +180,20 @@ impl Div for Color {
 
 	fn div(self, other: Color) -> Color {
 		Color {
-			r: clamp(self.r / other.r, 0.0, 255.0),
-			g: clamp(self.g / other.g, 0.0, 255.0),
-			b: clamp(self.b / other.b, 0.0, 255.0),
-			a: clamp(self.a / other.a, 0.0, 255.0),
+			r: (self.r / other.r).clamp(0.0, 255.0),
+			g: (self.g / other.g).clamp(0.0, 255.0),
+			b: (self.b / other.b).clamp(0.0, 255.0),
+			a: (self.a / other.a).clamp(0.0, 255.0),
 		}
 	}
 }
 
 impl DivAssign for Color {
 	fn div_assign(&mut self, other: Color) {
-		self.r = clamp(self.r / other.r, 0.0, 255.0);
-		self.g = clamp(self.g / other.g, 0.0, 255.0);
-		self.b = clamp(self.b / other.b, 0.0, 255.0);
-		self.a = clamp(self.a / other.a, 0.0, 255.0);
+		self.r = (self.r / other.r).clamp(0.0, 255.0);
+		self.g = (self.g / other.g).clamp(0.0, 255.0);
+		self.b = (self.b / other.b).clamp(0.0, 255.0);
+		self.a = (self.a / other.a).clamp(0.0, 255.0);
 	}
 }
 
@@ -205,10 +205,10 @@ impl <T> Div<T> for Color
 		let scale = value.into();
 
 		Color {
-			r: clamp(self.r / scale, 0.0, 255.0),
-			g: clamp(self.g / scale, 0.0, 255.0),
-			b: clamp(self.b / scale, 0.0, 255.0),
-			a: clamp(self.a / scale, 0.0, 255.0),
+			r: (self.r / scale).clamp(0.0, 255.0),
+			g: (self.g / scale).clamp(0.0, 255.0),
+			b: (self.b / scale).clamp(0.0, 255.0),
+			a: (self.a / scale).clamp(0.0, 255.0),
 		}
 	}
 }
@@ -218,10 +218,10 @@ impl <T> DivAssign<T> for Color
 	fn div_assign(&mut self, value: T) {
 		let scale = value.into();
 
-		self.r = clamp(self.r / scale, 0.0, 255.0);
-		self.g = clamp(self.g / scale, 0.0, 255.0);
-		self.b = clamp(self.b / scale, 0.0, 255.0);
-		self.a = clamp(self.a / scale, 0.0, 255.0);
+		self.r = (self.r / scale).clamp(0.0, 255.0);
+		self.g = (self.g / scale).clamp(0.0, 255.0);
+		self.b = (self.b / scale).clamp(0.0, 255.0);
+		self.a = (self.a / scale).clamp(0.0, 255.0);
 	}
 }
 
@@ -386,6 +386,12 @@ mod tests {
 	}
 
 	#[test]
+	fn color_from_dec() {
+		let color = Color::from_dec(28.0, 25.0, 39.0, 255.0);
+		assert_eq!(color, Color { r: 28.0, g: 25.0, b: 39.0, a: 255.0 });
+	}
+
+	#[test]
 	fn color_from_unit_interval() {
 		let color = Color::from_unit_interval(1.0, 0.0, 1.0, 1.0);
 		assert_eq!(color, Color { r: 255.0, g: 0.0, b: 255.0, a: 255.0 });
@@ -396,13 +402,6 @@ mod tests {
 		let color = Color::from(255, 0, 255, 255);
 		let unit_interval = color.unit_interval();
 		assert_eq!(unit_interval, [1.0, 0.0, 1.0, 1.0]);
-	}
-
-	#[test]
-	fn color_rgb() {
-		let color = Color::from(255, 0, 255, 255);
-		let rgb = color.rgb();
-		assert_eq!(rgb, [255.0, 0.0, 255.0]);
 	}
 
 	#[test]

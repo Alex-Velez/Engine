@@ -1,5 +1,5 @@
 // This file is modified code from 'rust-vector' (https://github.com/Wiseluster/rust-vector) created by Wiseluster
-
+use std::cmp::{Eq, PartialEq};
 use std::convert::{From, Into};
 use std::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign, Rem, RemAssign, Neg, Not};
 
@@ -24,6 +24,14 @@ impl Vector2D {
         self.x = x;
         self.y = y;
         self
+    }
+}
+
+impl Eq for Vector2D {}
+
+impl PartialEq for Vector2D {
+    fn eq(&self, other: &Vector2D) -> bool {
+        self.x == other.x && self.y == other.y
     }
 }
 

@@ -39,12 +39,12 @@ impl Rotation2D {
 	pub fn rad(self) -> f32 { self.radians }
 
 	pub fn set_deg(&mut self, degrees: f32) {
-		self.degrees = degrees;
+		self.degrees = degrees % 360.0;
 		self.radians = Math::DEG_RAD * self.degrees;
 	}
 
 	pub fn set_rad(&mut self, radians: f32) {
-		self.radians = radians;
+		self.radians = radians % Math::TWO_PIE;
 		self.degrees = Math::RAD_DEG * self.radians;
 		
 	}

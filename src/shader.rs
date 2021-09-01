@@ -69,7 +69,6 @@ pub fn Load(vertexFilePath: &str, fragmentFilePath: &str) -> GLuint {
 }
 
 pub fn Use(programs: Vec<GLuint>) {
-	println!("Shader, use");
 	unsafe {
 		for program in programs {
 			gl::UseProgram(program);
@@ -78,13 +77,9 @@ pub fn Use(programs: Vec<GLuint>) {
 }
 
 pub fn SetMatrix4x4(program_id: GLuint, uniformName: &str, mat: Matrix4x4) {
-	println!("Shader, set matrix 4x4");
 	unsafe {
-		println!("Shader, let location");
 		let c_uniformName = CString::new(uniformName).unwrap();
 		let location = gl::GetUniformLocation(program_id, c_uniformName.as_ptr());
-		println!("Shader, gl::UniformMatrix4fv");
 		gl::UniformMatrix4fv(location, 1, gl::FALSE, mat.array().as_ptr() as *const f32 as *const GLfloat);
-		println!("hmm!!!");
 	}
 }
