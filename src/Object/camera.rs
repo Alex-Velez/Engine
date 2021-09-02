@@ -17,13 +17,13 @@ impl Camera2D {
 	}
 
 	pub fn get_projection_matrix(self, window: Window) -> Matrix4x4 {
-		let left = self.focus_position.x - window.size.width / 2.0;
-		let right = self.focus_position.x + window.size.width / 2.0;
-		let top = self.focus_position.y - window.size.height / 2.0;
-		let bottom = self.focus_position.y + window.size.height / 2.0;
+		let left = self.focus_position.x - window.size.x / 2.0;
+		let right = self.focus_position.x + window.size.x / 2.0;
+		let top = self.focus_position.y - window.size.y / 2.0;
+		let bottom = self.focus_position.y + window.size.y / 2.0;
 
 		let orthoMatrix: Matrix4x4 = Matrix4x4::create_orthographic_off_center(left, right, bottom, top, 0.01, 100.0);
-		let zoomMatrix: Matrix4x4 = Matrix4x4::create_scale(Scale3D::from(self.zoom, self.zoom, self.zoom));
+		let zoomMatrix: Matrix4x4 = Matrix4x4::create_scale(Scale3D::from_f32(self.zoom, self.zoom, self.zoom));
 
 		orthoMatrix.mult(zoomMatrix)
 	}

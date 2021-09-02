@@ -13,7 +13,7 @@ just an opengl test project for educational purposes.
 use Engine::{Window, Size2D, Color};
 
 fn main() {
-	let window = Window::from("Title", Size2D::from(856.0, 482.0), Color::BLACK);
+	let window = Window::from("Title", Size2D::from(856, 482), Color::BLACK);
 
 	Engine::Run(window, start, update, end);
 }

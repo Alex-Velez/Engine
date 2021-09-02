@@ -19,7 +19,7 @@ impl Color {
 		Color { r: r as f32, g: g as f32, b: b as f32, a: a as f32 }
 	}
 
-	pub const fn from_dec(r: f32, g: f32, b: f32, a: f32) -> Color {
+	pub const fn from_f32(r: f32, g: f32, b: f32, a: f32) -> Color {
 		Color { r, g, b, a }
 	}
 
@@ -386,8 +386,8 @@ mod tests {
 	}
 
 	#[test]
-	fn color_from_dec() {
-		let color = Color::from_dec(28.0, 25.0, 39.0, 255.0);
+	fn color_from_f32() {
+		let color = Color::from_f32(28.0, 25.0, 39.0, 255.0);
 		assert_eq!(color, Color { r: 28.0, g: 25.0, b: 39.0, a: 255.0 });
 	}
 

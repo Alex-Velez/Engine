@@ -14,11 +14,17 @@ use std::str;
 use std::mem;
 use std::os::raw::c_void;
 
-pub(crate) mod rotation;
 pub(crate) mod color;
+pub(crate) mod position;
+pub(crate) mod rotation;
+pub(crate) mod scale;
+pub(crate) mod size;
 
-pub use rotation::*;
 pub use color::*;
+pub use position::*;
+pub use rotation::*;
+pub use scale::*;
+pub use size::*;
 
 pub fn Run(win: Window, start: fn(), update: fn(), end: fn()) {
 
@@ -40,26 +46,26 @@ pub fn Run(win: Window, start: fn(), update: fn(), end: fn()) {
 	// glfw window creation
 	// --------------------
 	let (mut window, events) = glfw
-		.create_window(win.size.width as u32, win.size.height as u32, win.title, glfw::WindowMode::Windowed)
+		.create_window(win.size.x as u32, win.size.y as u32, win.title, glfw::WindowMode::Windowed)
 		.expect("Failed to create GLFW window!");
 
-	//println!("Window '{}' ({}, {}) was successfully built!", win.title, win.size.width, win.size.height);
-	Debug::log(&["info", "window"], format!("Window '{}' ({}, {}) was successfully built!", win.title, win.size.width, win.size.height));
+	//println!("Window '{}' ({}, {}) was successfully built!", win.title, win.size.x, win.size.y);
+	Debug::log(&["info", "window"], format!("Window '{}' ({}, {}) was successfully built!", win.title, win.size.x, win.size.y));
 
 	// Set window postion to center of screen
 	let (x, y) = glfw.with_primary_monitor(|_: &mut _, monitor: Option<&glfw::Monitor>| {
 		let screen = monitor.unwrap().get_workarea();
-		return ((screen.2 - win.size.width as i32) / 2, (screen.3 - win.size.height as i32) / 2);
+		return ((screen.2 - win.size.x as i32) / 2, (screen.3 - win.size.y as i32) / 2);
 	});
 
 	window.set_icon_from_pixels(gen_icon());
 	window.set_pos(x, y);
-	window.set_aspect_ratio(win.aspect_ratio.numer, win.aspect_ratio.denum);
+	window.set_aspect_ratio(win.aspect_ratio.0, win.aspect_ratio.1);
 	window.set_size_limits(
-		Some(win.min.width as u32),
-		Some(win.min.height as u32),
-		Some(win.max.width as u32),
-		Some(win.max.height as u32),
+		Some(win.min.x as u32),
+		Some(win.min.y as u32),
+		Some(win.max.x as u32),
+		Some(win.max.y as u32),
 	);
 
 	window.make_current();
@@ -70,7 +76,7 @@ pub fn Run(win: Window, start: fn(), update: fn(), end: fn()) {
 	// ---------------------------------------
 	gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
-	unsafe { gl::Viewport(0, 0, win.size.width as i32, win.size.height as i32) }
+	unsafe { gl::Viewport(0, 0, win.size.x as i32, win.size.y as i32) }
 
 	glfw.set_swap_interval(glfw::SwapInterval::None); // VSync off (0)
 
@@ -121,7 +127,7 @@ pub fn Run(win: Window, start: fn(), update: fn(), end: fn()) {
 		(shader_program, VAO)
 	};
 
-	let cam = Camera2D::from(Vector2D::from(win.size.width / 2.0, win.size.height / 2.0), 1.0);
+	let cam = Camera2D::from(Vector2D::from(win.size.x / 2.0, win.size.y / 2.0), 1.0);
 	let mut _delta_time: f64 = 0.0;
 	let mut total_elapsed_seconds: f64 = 0.0;
 
@@ -154,8 +160,8 @@ pub fn Run(win: Window, start: fn(), update: fn(), end: fn()) {
 			gl::ClearColor(win_color[0], win_color[1], win_color[2], win_color[3]);
 			gl::Clear(gl::COLOR_BUFFER_BIT);
 
-			let position = Position2D::from(400.0, 300.0);
-			let scale = Scale3D::from(150.0, 100.0, 1.0);
+			let position = Position2D::from(400, 300);
+			let scale = Scale3D::from(150, 100, 1);
 			let rotation = Rotation2D::from_rad((total_elapsed_seconds.sin() * Math::TWO_PIE_F64) as f32);
 			//Rotation2D::from_rad(std::f32::consts::PI / 4.0);
 
@@ -218,7 +224,7 @@ fn KeyboardHandler(window: &mut glfw::Window, event: glfw::WindowEvent) {
 	}
 }
 
-
+// todo: create unit tests and impls
 #[derive(Clone, Copy, Debug)]
 pub struct Window {
     pub title: &'static str,
@@ -243,10 +249,10 @@ impl Window {
         Window {
             title: "window",
             icon: "",
-            size: Size2D::from(856.0, 482.0),
-            max: Size2D::from(856.0, 482.0),
-			min: Size2D::from(160.0, 90.0),
-			aspect_ratio: Ratio2D::from(16, 9),
+            size: Size2D::from(856, 482),
+            max: Size2D::from(856, 482),
+			min: Size2D::from(160, 90),
+			aspect_ratio: Ratio2D(16, 9),
             resizable: true,
             fullscreen: false,
             maximized: false,
@@ -265,8 +271,8 @@ impl Window {
             icon: "",
             size,
             max: size,
-			min: Size2D::from(160.0, 90.0),
-			aspect_ratio: Ratio2D::from(16, 9),
+			min: Size2D::from(160, 90),
+			aspect_ratio: Ratio2D(16, 9),
             resizable: true,
             fullscreen: false,
             maximized: false,
@@ -352,55 +358,7 @@ impl Window {
 	pub const fn draw() {}
 }
 
-#[derive(Copy, Clone, Debug)]
-pub struct Position2D {
-    pub x: f32,
-	pub y: f32,
-}
-
-impl Position2D {
-    pub const fn new() -> Position2D {
-        Position2D { x: 0.0, y: 0.0 }
-	}
-
-	pub const fn from(x: f32, y: f32) -> Position2D {
-        Position2D { x, y }
-	}
-}
-
-#[derive(Copy, Clone, Debug)]
-pub struct Scale2D {
-	pub x: f32,
-	pub y: f32,
-}
-
-impl Scale2D {
-	pub const fn new() -> Scale2D {
-		Scale2D { x: 1.0, y: 1.0 }
-	}
-
-	pub const fn from(x: f32, y: f32) -> Scale2D {
-		Scale2D { x, y }
-	}
-}
-
-#[derive(Copy, Clone, Debug)]
-pub struct Scale3D {
-	pub x: f32,
-	pub y: f32,
-	pub z: f32,
-}
-
-impl Scale3D {
-	pub const fn new() -> Scale3D {
-		Scale3D { x: 1.0, y: 1.0, z: 1.0 }
-	}
-
-	pub const fn from(x: f32, y: f32, z: f32) -> Scale3D {
-		Scale3D { x, y, z }
-	}
-}
-
+// todo: create unit tests and impls
 #[derive(Copy, Clone, Debug)]
 pub struct Transform2D {
 	pub position: Position2D,
@@ -418,38 +376,19 @@ impl Transform2D {
 	}
 }
 
-#[derive(Clone, Copy, Debug)]
-pub struct Size2D {
-	pub width: f32,
-	pub height: f32,
-}
-
-impl Size2D {
-	pub const fn new() -> Size2D {
-		Size2D { width: 0.0, height: 0.0 }
-	}
-
-	pub const fn from(width: f32, height: f32) -> Size2D {
-		Size2D { width, height }
-	}
-}
-
 #[derive(Copy, Clone, Debug)]
-pub struct Ratio2D {
-	pub numer: u32,
-	pub denum: u32,
+pub struct Ratio2D(u32, u32);
+
+impl Eq for Ratio2D {}
+
+impl PartialEq for Ratio2D {
+    fn eq(&self, other: &Ratio2D) -> bool {
+        self.0 == other.0 && self.1 == other.1
+    }
 }
 
-impl Ratio2D {
-	pub const fn new() -> Ratio2D {
-		Ratio2D { numer: 16, denum: 9 }
-	}
 
-	pub const fn from(numer: u32, denum: u32) -> Ratio2D {
-		Ratio2D { numer, denum }
-	}
-}
-
+// todo: create unit tests and impls
 #[derive(Copy, Clone, Debug)]
 pub struct Sprite2D {
     pub src: &'static str,
@@ -574,3 +513,14 @@ impl Animation2D {
 	pub fn Trigger(index: usize, trigger: fn()) ->
 }
 */
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn ratio_2d() {
+		let ratio = Ratio2D(16, 9);
+		assert_eq!(ratio, Ratio2D(16, 9));
+	}
+}

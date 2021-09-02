@@ -5,7 +5,7 @@ fn main() {
 
 	//let shape0 = Engine::Visual::Triangle::new();
 
-	let win = Window::from("TestGame", Size2D::from(856.0, 482.0), Color::BLACK);
+	let win = Window::from("TestGame", Size2D::from(856, 482), Color::BLACK);
 
 
 	Engine::Run(win, start, update, end);
