@@ -15,7 +15,7 @@
 //! use Engine::{Window, Size2D, Color};
 //!
 //! fn main() {
-//!		let window = Window::from("Title", Size2D::from(856.0, 482.0), Color::BLACK);
+//!		let window = Window::from("Title", Size2D::from(856, 482), Color::BLACK);
 //!
 //!		Engine::Run(window, start, update, end);
 //!	}
@@ -33,10 +33,8 @@
 //! }
 //! ```
 
-// * Temporary, I don't like warnings >:(
-#![allow(unused_imports)]
+// * I'll name my functions however I want >:(
 #![allow(non_snake_case)]
-#![allow(dead_code)]
 
 pub(crate) extern crate glfw;
 pub(crate) extern crate gl;
@@ -54,3 +52,7 @@ mod Object;
 pub use Global::*;
 pub use Object::*;
 
+/*
+todo: Unit tests for Vector
+todo: Rewrite arithmetic operations for Vector
+*/

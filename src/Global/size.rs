@@ -1,5 +1,5 @@
 use std::cmp::{Eq, PartialEq};
-use std::convert::{From, Into};
+use std::convert::Into;
 use std::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign};
 
 #[derive(Clone, Copy, Debug)]

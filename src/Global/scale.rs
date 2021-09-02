@@ -1,5 +1,5 @@
 use std::cmp::{Eq, PartialEq};
-use std::convert::{From, Into};
+use std::convert::Into;
 use std::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign};
 
 #[derive(Copy, Clone, Debug)]
@@ -373,7 +373,7 @@ mod tests {
 	#[test]
 	fn scale_2d_new() {
 		let scale2d = Scale2D::new();
-		assert_eq!(scale2d, Scale2D { x: 0.0, y: 0.0 });
+		assert_eq!(scale2d, Scale2D { x: 1.0, y: 1.0 });
 	}
 
     #[test]
@@ -518,7 +518,7 @@ mod tests {
     #[test]
 	fn scale_3d_new() {
 		let scale3d = Scale3D::new();
-		assert_eq!(scale3d, Scale3D { x: 0.0, y: 0.0, z: 0.0 });
+		assert_eq!(scale3d, Scale3D { x: 1.0, y: 1.0, z: 1.0 });
 	}
 
     #[test]

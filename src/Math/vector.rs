@@ -1,6 +1,6 @@
 // This file is modified code from 'rust-vector' (https://github.com/Wiseluster/rust-vector) created by Wiseluster
 use std::cmp::{Eq, PartialEq};
-use std::convert::{From, Into};
+use std::convert::Into;
 use std::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign, Rem, RemAssign, Neg, Not};
 
 #[derive(Copy, Clone, Debug)]
@@ -91,6 +91,35 @@ impl <T> MulAssign<T> for Vector2D
 
 		self.x *= scale;
 		self.y *= scale;
+	}
+}
+
+impl Div for Vector2D {
+	type Output = f32;
+
+	fn div(self, other: Vector2D) -> f32 {
+		self.x / other.x + self.y / other.y
+	}
+}
+
+impl <T> Div<T> for Vector2D
+	where T: Into<f32> {
+	type Output = Vector2D;
+
+	fn div(self, value: T) -> Vector2D {
+		let scale = value.into();
+
+		Vector2D {x: self.x / scale, y: self.y / scale}
+	}
+}
+
+impl <T> DivAssign<T> for Vector2D
+	where T: Into<f32> {
+	fn div_assign(&mut self, value: T) {
+		let scale = value.into();
+
+		self.x /= scale;
+		self.y /= scale;
 	}
 }
 

@@ -1,11 +1,4 @@
-use crate::{
-	Camera2D,
-	Debug,
-	Math::{self, Matrix4x4, Vector2D},
-	gl::{self, types::*},
-	glfw::{self, Context, Action, Key},
-	shader
-};
+use crate::{Camera2D, Debug, Math::{self, Matrix4x4, Vector2D}, gl::{self, types::*}, glfw::{self, Context, Action, Key}, shader};
 use image::{self, RgbaImage};
 
 use std::sync::mpsc::Receiver;

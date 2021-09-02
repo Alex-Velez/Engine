@@ -7,7 +7,6 @@ fn main() {
 
 	let win = Window::from("TestGame", Size2D::from(856, 482), Color::BLACK);
 
-
 	Engine::Run(win, start, update, end);
 	
 }
