@@ -15,13 +15,12 @@ impl Color {
         Color { r: 255.0, g: 255.0, b: 255.0, a: 255.0 }
 	}
 
-	pub const fn from(r: u8, g: u8, b: u8, a: u8) -> Color {
-		Color { r: r as f32, g: g as f32, b: b as f32, a: a as f32 }
-	}
-
-	pub const fn from_f32(r: f32, g: f32, b: f32, a: f32) -> Color {
-		Color { r, g, b, a }
-	}
+    pub fn from<T: Into<f64>>(r: T, g: T, b: T, a: T) -> Color {
+        let (r1, g1, b1, a1) = (r.into(), g.into(), b.into(), a.into());
+        assert!(r1 >= 0.0 && g1 >= 0.0 && b1 >= 0.0 && a1 >= 0.0);
+		assert!(r1 <= 255.0 && g1 <= 255.0 && b1 <= 255.0 && a1 <= 255.0);
+        Color { r: r1 as f32, g: g1 as f32, b: b1 as f32, a: a1 as f32 }
+    }
 
 	pub fn from_unit_interval(r: f32, g: f32, b: f32, a: f32) -> Self {
 		assert!(r >= 0.0 && g >= 0.0 && b >= 0.0 && a >= 0.0);
@@ -226,147 +225,147 @@ impl <T> DivAssign<T> for Color
 }
 
 impl Color {
-	pub const INDIANRED: Color = Color::from(205, 92, 92, 255);
-	pub const LIGHTCORAL: Color = Color::from(240, 128, 128, 255);
-	pub const SALMON: Color = Color::from(250, 128, 114, 255);
-	pub const DARKSALMON: Color = Color::from(233, 150, 122, 255);
-	pub const LIGHTSALMON: Color = Color::from(255, 160, 122, 255);
-	pub const CRIMSON: Color = Color::from(220, 20, 60, 255);
-	pub const RED: Color = Color::from(255, 0, 0, 255);
-	pub const FIREBRICK: Color = Color::from(178, 34, 34, 255);
-	pub const DARKRED: Color = Color::from(139, 0, 0, 255);
-	pub const PINK: Color = Color::from(255, 192, 203, 255);
-	pub const LIGHTPINK: Color = Color::from(255, 182, 193, 255);
-	pub const HOTPINK: Color = Color::from(255, 105, 180, 255);
-	pub const DEEPPINK: Color = Color::from(255, 20, 147, 255);
-	pub const MEDIUMVIOLETRED: Color = Color::from(199, 21, 133, 255);
-	pub const PALEVIOLETRED: Color = Color::from(219, 112, 147, 255);
-	pub const CORAL: Color = Color::from(255, 127, 80, 255);
-	pub const TOMATO: Color = Color::from(255, 99, 71, 255);
-	pub const ORANGERED: Color = Color::from(255, 69, 0, 255);
-	pub const DARKORANGE: Color = Color::from(255, 140, 0, 255);
-	pub const ORANGE: Color = Color::from(255, 165, 0, 255);
-	pub const GOLD: Color = Color::from(255, 215, 0, 255);
-	pub const YELLOW: Color = Color::from(255, 255, 0, 255);
-	pub const LIGHTYELLOW: Color = Color::from(255, 255, 224, 255);
-	pub const LEMONCHIFFON: Color = Color::from(255, 250, 205, 255);
-	pub const LIGHTGOLDENRODYELLOW: Color = Color::from(250, 250, 210, 255);
-	pub const PAPAYAWHIP: Color = Color::from(255, 239, 213, 255);
-	pub const MOCCASIN: Color = Color::from(255, 228, 181, 255);
-	pub const PEACHPUFF: Color = Color::from(255, 218, 185, 255);
-	pub const PALEGOLDENROD: Color = Color::from(238, 232, 170, 255);
-	pub const KHAKI: Color = Color::from(240, 230, 140, 255);
-	pub const DARKKHAKI: Color = Color::from(189, 183, 107, 255);
-	pub const LAVENDER: Color = Color::from(230, 230, 250, 255);
-	pub const THISTLE: Color = Color::from(216, 191, 216, 255);
-	pub const PLUM: Color = Color::from(221, 160, 221, 255);
-	pub const VIOLET: Color = Color::from(238, 130, 238, 255);
-	pub const ORCHID: Color = Color::from(218, 112, 214, 255);
-	pub const FUCHSIA: Color = Color::from(255, 0, 255, 255);
-	pub const MAGENTA: Color = Color::from(255, 0, 255, 255);
-	pub const MEDIUMORCHID: Color = Color::from(186, 85, 211, 255);
-	pub const MEDIUMPURPLE: Color = Color::from(147, 112, 219, 255);
-	pub const REBECCAPURPLE: Color = Color::from(102, 51, 153, 255);
-	pub const BLUEVIOLET: Color = Color::from(138, 43, 226, 255);
-	pub const DARKVIOLET: Color = Color::from(148, 0, 211, 255);
-	pub const DARKORCHID: Color = Color::from(153, 50, 204, 255);
-	pub const DARKMAGENTA: Color = Color::from(139, 0, 139, 255);
-	pub const PURPLE: Color = Color::from(128, 0, 128, 255);
-	pub const INDIGO: Color = Color::from(75, 0, 130, 255);
-	pub const SLATEBLUE: Color = Color::from(106, 90, 205, 255);
-	pub const DARKSLATEBLUE: Color = Color::from(72, 61, 139, 255);
-	pub const GREENYELLOW: Color = Color::from(173, 255, 47, 255);
-	pub const CHARTREUSE: Color = Color::from(127, 255, 0, 255);
-	pub const LAWNGREEN: Color = Color::from(124, 252, 0, 255);
-	pub const LIME: Color = Color::from(0, 255, 0, 255);
-	pub const LIMEGREEN: Color = Color::from(50, 205, 50, 255);
-	pub const PALEGREEN: Color = Color::from(152, 251, 152, 255);
-	pub const LIGHTGREEN: Color = Color::from(144, 238, 144, 255);
-	pub const MEDIUMSPRINGGREEN: Color = Color::from(0, 250, 154, 255);
-	pub const SPRINGGREEN: Color = Color::from(0, 255, 127, 255);
-	pub const MEDIUMSEAGREEN: Color = Color::from(60, 179, 113, 255);
-	pub const SEAGREEN: Color = Color::from(46, 139, 87, 255);
-	pub const FORESTGREEN: Color = Color::from(34, 139, 34, 255);
-	pub const GREEN: Color = Color::from(0, 128, 0, 255);
-	pub const DARKGREEN: Color = Color::from(0, 100, 0, 255);
-	pub const YELLOWGREEN: Color = Color::from(154, 205, 50, 255);
-	pub const OLIVEDRAB: Color = Color::from(107, 142, 35, 255);
-	pub const OLIVE: Color = Color::from(128, 128, 0, 255);
-	pub const DARKOLIVEGREEN: Color = Color::from(85, 107, 47, 255);
-	pub const MEDIUMAQUAMARINE: Color = Color::from(102, 205, 170, 255);
-	pub const DARKSEAGREEN: Color = Color::from(143, 188, 139, 255);
-	pub const LIGHTSEAGREEN: Color = Color::from(32, 178, 170, 255);
-	pub const DARKCYAN: Color = Color::from(0, 139, 139, 255);
-	pub const TEAL: Color = Color::from(0, 128, 128, 255);
-	pub const AQUA: Color = Color::from(0, 255, 255, 255);
-	pub const CYAN: Color = Color::from(0, 255, 255, 255);
-	pub const LIGHTCYAN: Color = Color::from(224, 255, 255, 255);
-	pub const PALETURQUOISE: Color = Color::from(175, 238, 238, 255);
-	pub const AQUAMARINE: Color = Color::from(127, 255, 212, 255);
-	pub const TURQUOISE: Color = Color::from(64, 224, 208, 255);
-	pub const MEDIUMTURQUOISE: Color = Color::from(72, 209, 204, 255);
-	pub const DARKTURQUOISE: Color = Color::from(0, 206, 209, 255);
-	pub const CADETBLUE: Color = Color::from(95, 158, 160, 255);
-	pub const STEELBLUE: Color = Color::from(70, 130, 180, 255);
-	pub const LIGHTSTEELBLUE: Color = Color::from(176, 196, 222, 255);
-	pub const POWDERBLUE: Color = Color::from(176, 224, 230, 255);
-	pub const LIGHTBLUE: Color = Color::from(173, 216, 230, 255);
-	pub const SKYBLUE: Color = Color::from(135, 206, 235, 255);
-	pub const LIGHTSKYBLUE: Color = Color::from(135, 206, 250, 255);
-	pub const DEEPSKYBLUE: Color = Color::from(0, 191, 255, 255);
-	pub const DODGERBLUE: Color = Color::from(30, 144, 255, 255);
-	pub const CORNFLOWERBLUE: Color = Color::from(100, 149, 237, 255);
-	pub const MEDIUMSLATEBLUE: Color = Color::from(123, 104, 238, 255);
-	pub const ROYALBLUE: Color = Color::from(65, 105, 225, 255);
-	pub const BLUE: Color = Color::from(0, 0, 255, 255);
-	pub const MEDIUMBLUE: Color = Color::from(0, 0, 205, 255);
-	pub const DARKBLUE: Color = Color::from(0, 0, 139, 255);
-	pub const NAVY: Color = Color::from(0, 0, 128, 255);
-	pub const MIDNIGHTBLUE: Color = Color::from(25, 25, 112, 255);
-	pub const CORNSILK: Color = Color::from(255, 248, 220, 255);
-	pub const BLANCHEDALMOND: Color = Color::from(255, 235, 205, 255);
-	pub const BISQUE: Color = Color::from(255, 228, 196, 255);
-	pub const NAVAJOWHITE: Color = Color::from(255, 222, 173, 255);
-	pub const WHEAT: Color = Color::from(245, 222, 179, 255);
-	pub const BURLYWOOD: Color = Color::from(222, 184, 135, 255);
-	pub const TAN: Color = Color::from(210, 180, 140, 255);
-	pub const ROSYBROWN: Color = Color::from(188, 143, 143, 255);
-	pub const SANDYBROWN: Color = Color::from(244, 164, 96, 255);
-	pub const GOLDENROD: Color = Color::from(218, 165, 32, 255);
-	pub const DARKGOLDENROD: Color = Color::from(184, 134, 11, 255);
-	pub const PERU: Color = Color::from(205, 133, 63, 255);
-	pub const CHOCOLATE: Color = Color::from(210, 105, 30, 255);
-	pub const SADDLEBROWN: Color = Color::from(139, 69, 19, 255);
-	pub const SIENNA: Color = Color::from(160, 82, 45, 255);
-	pub const BROWN: Color = Color::from(165, 42, 42, 255);
-	pub const MAROON: Color = Color::from(128, 0, 0, 255);
-	pub const WHITE: Color = Color::from(255, 255, 255, 255);
-	pub const SNOW: Color = Color::from(255, 250, 250, 255);
-	pub const HONEYDEW: Color = Color::from(240, 255, 240, 255);
-	pub const MINTCREAM: Color = Color::from(245, 255, 250, 255);
-	pub const AZURE: Color = Color::from(240, 255, 255, 255);
-	pub const ALICEBLUE: Color = Color::from(240, 248, 255, 255);
-	pub const GHOSTWHITE: Color = Color::from(248, 248, 255, 255);
-	pub const WHITESMOKE: Color = Color::from(245, 245, 245, 255);
-	pub const SEASHELL: Color = Color::from(255, 245, 238, 255);
-	pub const BEIGE: Color = Color::from(245, 245, 220, 255);
-	pub const OLDLACE: Color = Color::from(253, 245, 230, 255);
-	pub const FLORALWHITE: Color = Color::from(255, 250, 240, 255);
-	pub const IVORY: Color = Color::from(255, 255, 240, 255);
-	pub const ANTIQUEWHITE: Color = Color::from(250, 235, 215, 255);
-	pub const LINEN: Color = Color::from(250, 240, 230, 255);
-	pub const LAVENDERBLUSH: Color = Color::from(255, 240, 245, 255);
-	pub const MISTYROSE: Color = Color::from(255, 228, 225, 255);
-	pub const GAINSBORO: Color = Color::from(220, 220, 220, 255);
-	pub const LIGHTGRAY: Color = Color::from(211, 211, 211, 255);
-	pub const SILVER: Color = Color::from(192, 192, 192, 255);
-	pub const DARKGRAY: Color = Color::from(169, 169, 169, 255);
-	pub const GRAY: Color = Color::from(128, 128, 128, 255);
-	pub const DIMGRAY: Color = Color::from(105, 105, 105, 255);
-	pub const LIGHTSLATEGRAY: Color = Color::from(119, 136, 153, 255);
-	pub const SLATEGRAY: Color = Color::from(112, 128, 144, 255);
-	pub const DARKSLATEGRAY: Color = Color::from(47, 79, 79, 255);
-	pub const BLACK: Color = Color::from(0, 0, 0, 255);
+    pub const INDIANRED: Color = Color { r: 205.0, g: 92.0, b: 92.0, a: 255.0 };
+    pub const LIGHTCORAL: Color = Color { r: 240.0, g: 128.0, b: 128.0, a: 255.0 };
+    pub const SALMON: Color = Color { r: 250.0, g: 128.0, b: 114.0, a: 255.0 };
+    pub const DARKSALMON: Color = Color { r: 233.0, g: 150.0, b: 122.0, a: 255.0 };
+    pub const LIGHTSALMON: Color = Color { r: 255.0, g: 160.0, b: 122.0, a: 255.0 };
+    pub const CRIMSON: Color = Color { r: 220.0, g: 20.0, b: 60.0, a: 255.0 };
+    pub const RED: Color = Color { r: 255.0, g: 0.0, b: 0.0, a: 255.0 };
+    pub const FIREBRICK: Color = Color { r: 178.0, g: 34.0, b: 34.0, a: 255.0 };
+    pub const DARKRED: Color = Color { r: 139.0, g: 0.0, b: 0.0, a: 255.0 };
+    pub const PINK: Color = Color { r: 255.0, g: 192.0, b: 203.0, a: 255.0 };
+    pub const LIGHTPINK: Color = Color { r: 255.0, g: 182.0, b: 193.0, a: 255.0 };
+    pub const HOTPINK: Color = Color { r: 255.0, g: 105.0, b: 180.0, a: 255.0 };
+    pub const DEEPPINK: Color = Color { r: 255.0, g: 20.0, b: 147.0, a: 255.0 };
+    pub const MEDIUMVIOLETRED: Color = Color { r: 199.0, g: 21.0, b: 133.0, a: 255.0 };
+    pub const PALEVIOLETRED: Color = Color { r: 219.0, g: 112.0, b: 147.0, a: 255.0 };
+    pub const CORAL: Color = Color { r: 255.0, g: 127.0, b: 80.0, a: 255.0 };
+    pub const TOMATO: Color = Color { r: 255.0, g: 99.0, b: 71.0, a: 255.0 };
+    pub const ORANGERED: Color = Color { r: 255.0, g: 69.0, b: 0.0, a: 255.0 };
+    pub const DARKORANGE: Color = Color { r: 255.0, g: 140.0, b: 0.0, a: 255.0 };
+    pub const ORANGE: Color = Color { r: 255.0, g: 165.0, b: 0.0, a: 255.0 };
+    pub const GOLD: Color = Color { r: 255.0, g: 215.0, b: 0.0, a: 255.0 };
+    pub const YELLOW: Color = Color { r: 255.0, g: 255.0, b: 0.0, a: 255.0 };
+    pub const LIGHTYELLOW: Color = Color { r: 255.0, g: 255.0, b: 224.0, a: 255.0 };
+    pub const LEMONCHIFFON: Color = Color { r: 255.0, g: 250.0, b: 205.0, a: 255.0 };
+    pub const LIGHTGOLDENRODYELLOW: Color = Color { r: 250.0, g: 250.0, b: 210.0, a: 255.0 };
+    pub const PAPAYAWHIP: Color = Color { r: 255.0, g: 239.0, b: 213.0, a: 255.0 };
+    pub const MOCCASIN: Color = Color { r: 255.0, g: 228.0, b: 181.0, a: 255.0 };
+    pub const PEACHPUFF: Color = Color { r: 255.0, g: 218.0, b: 185.0, a: 255.0 };
+    pub const PALEGOLDENROD: Color = Color { r: 238.0, g: 232.0, b: 170.0, a: 255.0 };
+    pub const KHAKI: Color = Color { r: 240.0, g: 230.0, b: 140.0, a: 255.0 };
+    pub const DARKKHAKI: Color = Color { r: 189.0, g: 183.0, b: 107.0, a: 255.0 };
+    pub const LAVENDER: Color = Color { r: 230.0, g: 230.0, b: 250.0, a: 255.0 };
+    pub const THISTLE: Color = Color { r: 216.0, g: 191.0, b: 216.0, a: 255.0 };
+    pub const PLUM: Color = Color { r: 221.0, g: 160.0, b: 221.0, a: 255.0 };
+    pub const VIOLET: Color = Color { r: 238.0, g: 130.0, b: 238.0, a: 255.0 };
+    pub const ORCHID: Color = Color { r: 218.0, g: 112.0, b: 214.0, a: 255.0 };
+    pub const FUCHSIA: Color = Color { r: 255.0, g: 0.0, b: 255.0, a: 255.0 };
+    pub const MAGENTA: Color = Color { r: 255.0, g: 0.0, b: 255.0, a: 255.0 };
+    pub const MEDIUMORCHID: Color = Color { r: 186.0, g: 85.0, b: 211.0, a: 255.0 };
+    pub const MEDIUMPURPLE: Color = Color { r: 147.0, g: 112.0, b: 219.0, a: 255.0 };
+    pub const REBECCAPURPLE: Color = Color { r: 102.0, g: 51.0, b: 153.0, a: 255.0 };
+    pub const BLUEVIOLET: Color = Color { r: 138.0, g: 43.0, b: 226.0, a: 255.0 };
+    pub const DARKVIOLET: Color = Color { r: 148.0, g: 0.0, b: 211.0, a: 255.0 };
+    pub const DARKORCHID: Color = Color { r: 153.0, g: 50.0, b: 204.0, a: 255.0 };
+    pub const DARKMAGENTA: Color = Color { r: 139.0, g: 0.0, b: 139.0, a: 255.0 };
+    pub const PURPLE: Color = Color { r: 128.0, g: 0.0, b: 128.0, a: 255.0 };
+    pub const INDIGO: Color = Color { r: 75.0, g: 0.0, b: 130.0, a: 255.0 };
+    pub const SLATEBLUE: Color = Color { r: 106.0, g: 90.0, b: 205.0, a: 255.0 };
+    pub const DARKSLATEBLUE: Color = Color { r: 72.0, g: 61.0, b: 139.0, a: 255.0 };
+    pub const MEDIUMSLATEBLUE: Color = Color { r: 123.0, g: 104.0, b: 238.0, a: 255.0 };
+    pub const GREENYELLOW: Color = Color { r: 173.0, g: 255.0, b: 47.0, a: 255.0 };
+    pub const CHARTREUSE: Color = Color { r: 127.0, g: 255.0, b: 0.0, a: 255.0 };
+    pub const LAWNGREEN: Color = Color { r: 124.0, g: 252.0, b: 0.0, a: 255.0 };
+    pub const LIME: Color = Color { r: 0.0, g: 255.0, b: 0.0, a: 255.0 };
+    pub const LIMEGREEN: Color = Color { r: 50.0, g: 205.0, b: 50.0, a: 255.0 };
+    pub const PALEGREEN: Color = Color { r: 152.0, g: 251.0, b: 152.0, a: 255.0 };
+    pub const LIGHTGREEN: Color = Color { r: 144.0, g: 238.0, b: 144.0, a: 255.0 };
+    pub const MEDIUMSPRINGGREEN: Color = Color { r: 0.0, g: 250.0, b: 154.0, a: 255.0 };
+    pub const SPRINGGREEN: Color = Color { r: 0.0, g: 255.0, b: 127.0, a: 255.0 };
+    pub const MEDIUMSEAGREEN: Color = Color { r: 60.0, g: 179.0, b: 113.0, a: 255.0 };
+    pub const SEAGREEN: Color = Color { r: 46.0, g: 139.0, b: 87.0, a: 255.0 };
+    pub const FORESTGREEN: Color = Color { r: 34.0, g: 139.0, b: 34.0, a: 255.0 };
+    pub const GREEN: Color = Color { r: 0.0, g: 128.0, b: 0.0, a: 255.0 };
+    pub const DARKGREEN: Color = Color { r: 0.0, g: 100.0, b: 0.0, a: 255.0 };
+    pub const YELLOWGREEN: Color = Color { r: 154.0, g: 205.0, b: 50.0, a: 255.0 };
+    pub const OLIVEDRAB: Color = Color { r: 107.0, g: 142.0, b: 35.0, a: 255.0 };
+    pub const OLIVE: Color = Color { r: 128.0, g: 128.0, b: 0.0, a: 255.0 };
+    pub const DARKOLIVEGREEN: Color = Color { r: 85.0, g: 107.0, b: 47.0, a: 255.0 };
+    pub const MEDIUMAQUAMARINE: Color = Color { r: 102.0, g: 205.0, b: 170.0, a: 255.0 };
+    pub const DARKSEAGREEN: Color = Color { r: 143.0, g: 188.0, b: 139.0, a: 255.0 };
+    pub const LIGHTSEAGREEN: Color = Color { r: 32.0, g: 178.0, b: 170.0, a: 255.0 };
+    pub const DARKCYAN: Color = Color { r: 0.0, g: 139.0, b: 139.0, a: 255.0 };
+    pub const TEAL: Color = Color { r: 0.0, g: 128.0, b: 128.0, a: 255.0 };
+    pub const AQUA: Color = Color { r: 0.0, g: 255.0, b: 255.0, a: 255.0 };
+    pub const CYAN: Color = Color { r: 0.0, g: 255.0, b: 255.0, a: 255.0 };
+    pub const LIGHTCYAN: Color = Color { r: 224.0, g: 255.0, b: 255.0, a: 255.0 };
+    pub const PALETURQUOISE: Color = Color { r: 175.0, g: 238.0, b: 238.0, a: 255.0 };
+    pub const AQUAMARINE: Color = Color { r: 127.0, g: 255.0, b: 212.0, a: 255.0 };
+    pub const TURQUOISE: Color = Color { r: 64.0, g: 224.0, b: 208.0, a: 255.0 };
+    pub const MEDIUMTURQUOISE: Color = Color { r: 72.0, g: 209.0, b: 204.0, a: 255.0 };
+    pub const DARKTURQUOISE: Color = Color { r: 0.0, g: 206.0, b: 209.0, a: 255.0 };
+    pub const CADETBLUE: Color = Color { r: 95.0, g: 158.0, b: 160.0, a: 255.0 };
+    pub const STEELBLUE: Color = Color { r: 70.0, g: 130.0, b: 180.0, a: 255.0 };
+    pub const LIGHTSTEELBLUE: Color = Color { r: 176.0, g: 196.0, b: 222.0, a: 255.0 };
+    pub const POWDERBLUE: Color = Color { r: 176.0, g: 224.0, b: 230.0, a: 255.0 };
+    pub const LIGHTBLUE: Color = Color { r: 173.0, g: 216.0, b: 230.0, a: 255.0 };
+    pub const SKYBLUE: Color = Color { r: 135.0, g: 206.0, b: 235.0, a: 255.0 };
+    pub const LIGHTSKYBLUE: Color = Color { r: 135.0, g: 206.0, b: 250.0, a: 255.0 };
+    pub const DEEPSKYBLUE: Color = Color { r: 0.0, g: 191.0, b: 255.0, a: 255.0 };
+    pub const DODGERBLUE: Color = Color { r: 30.0, g: 144.0, b: 255.0, a: 255.0 };
+    pub const CORNFLOWERBLUE: Color = Color { r: 100.0, g: 149.0, b: 237.0, a: 255.0 };
+    pub const ROYALBLUE: Color = Color { r: 65.0, g: 105.0, b: 225.0, a: 255.0 };
+    pub const BLUE: Color = Color { r: 0.0, g: 0.0, b: 255.0, a: 255.0 };
+    pub const MEDIUMBLUE: Color = Color { r: 0.0, g: 0.0, b: 205.0, a: 255.0 };
+    pub const DARKBLUE: Color = Color { r: 0.0, g: 0.0, b: 139.0, a: 255.0 };
+    pub const NAVY: Color = Color { r: 0.0, g: 0.0, b: 128.0, a: 255.0 };
+    pub const MIDNIGHTBLUE: Color = Color { r: 25.0, g: 25.0, b: 112.0, a: 255.0 };
+    pub const CORNSILK: Color = Color { r: 255.0, g: 248.0, b: 220.0, a: 255.0 };
+    pub const BLANCHEDALMOND: Color = Color { r: 255.0, g: 235.0, b: 205.0, a: 255.0 };
+    pub const BISQUE: Color = Color { r: 255.0, g: 228.0, b: 196.0, a: 255.0 };
+    pub const NAVAJOWHITE: Color = Color { r: 255.0, g: 222.0, b: 173.0, a: 255.0 };
+    pub const WHEAT: Color = Color { r: 245.0, g: 222.0, b: 179.0, a: 255.0 };
+    pub const BURLYWOOD: Color = Color { r: 222.0, g: 184.0, b: 135.0, a: 255.0 };
+    pub const TAN: Color = Color { r: 210.0, g: 180.0, b: 140.0, a: 255.0 };
+    pub const ROSYBROWN: Color = Color { r: 188.0, g: 143.0, b: 143.0, a: 255.0 };
+    pub const SANDYBROWN: Color = Color { r: 244.0, g: 164.0, b: 96.0, a: 255.0 };
+    pub const GOLDENROD: Color = Color { r: 218.0, g: 165.0, b: 32.0, a: 255.0 };
+    pub const DARKGOLDENROD: Color = Color { r: 184.0, g: 134.0, b: 11.0, a: 255.0 };
+    pub const PERU: Color = Color { r: 205.0, g: 133.0, b: 63.0, a: 255.0 };
+    pub const CHOCOLATE: Color = Color { r: 210.0, g: 105.0, b: 30.0, a: 255.0 };
+    pub const SADDLEBROWN: Color = Color { r: 139.0, g: 69.0, b: 19.0, a: 255.0 };
+    pub const SIENNA: Color = Color { r: 160.0, g: 82.0, b: 45.0, a: 255.0 };
+    pub const BROWN: Color = Color { r: 165.0, g: 42.0, b: 42.0, a: 255.0 };
+    pub const MAROON: Color = Color { r: 128.0, g: 0.0, b: 0.0, a: 255.0 };
+    pub const WHITE: Color = Color { r: 255.0, g: 255.0, b: 255.0, a: 255.0 };
+    pub const SNOW: Color = Color { r: 255.0, g: 250.0, b: 250.0, a: 255.0 };
+    pub const HONEYDEW: Color = Color { r: 240.0, g: 255.0, b: 240.0, a: 255.0 };
+    pub const MINTCREAM: Color = Color { r: 245.0, g: 255.0, b: 250.0, a: 255.0 };
+    pub const AZURE: Color = Color { r: 240.0, g: 255.0, b: 255.0, a: 255.0 };
+    pub const ALICEBLUE: Color = Color { r: 240.0, g: 248.0, b: 255.0, a: 255.0 };
+    pub const GHOSTWHITE: Color = Color { r: 248.0, g: 248.0, b: 255.0, a: 255.0 };
+    pub const WHITESMOKE: Color = Color { r: 245.0, g: 245.0, b: 245.0, a: 255.0 };
+    pub const SEASHELL: Color = Color { r: 255.0, g: 245.0, b: 238.0, a: 255.0 };
+    pub const BEIGE: Color = Color { r: 245.0, g: 245.0, b: 220.0, a: 255.0 };
+    pub const OLDLACE: Color = Color { r: 253.0, g: 245.0, b: 230.0, a: 255.0 };
+    pub const FLORALWHITE: Color = Color { r: 255.0, g: 250.0, b: 240.0, a: 255.0 };
+    pub const IVORY: Color = Color { r: 255.0, g: 255.0, b: 240.0, a: 255.0 };
+    pub const ANTIQUEWHITE: Color = Color { r: 250.0, g: 235.0, b: 215.0, a: 255.0 };
+    pub const LINEN: Color = Color { r: 250.0, g: 240.0, b: 230.0, a: 255.0 };
+    pub const LAVENDERBLUSH: Color = Color { r: 255.0, g: 240.0, b: 245.0, a: 255.0 };
+    pub const MISTYROSE: Color = Color { r: 255.0, g: 228.0, b: 225.0, a: 255.0 };
+    pub const GAINSBORO: Color = Color { r: 220.0, g: 220.0, b: 220.0, a: 255.0 };
+    pub const LIGHTGRAY: Color = Color { r: 211.0, g: 211.0, b: 211.0, a: 255.0 };
+    pub const SILVER: Color = Color { r: 192.0, g: 192.0, b: 192.0, a: 255.0 };
+    pub const DARKGRAY: Color = Color { r: 169.0, g: 169.0, b: 169.0, a: 255.0 };
+    pub const GRAY: Color = Color { r: 128.0, g: 128.0, b: 128.0, a: 255.0 };
+    pub const DIMGRAY: Color = Color { r: 105.0, g: 105.0, b: 105.0, a: 255.0 };
+    pub const LIGHTSLATEGRAY: Color = Color { r: 119.0, g: 136.0, b: 153.0, a: 255.0 };
+    pub const SLATEGRAY: Color = Color { r: 112.0, g: 128.0, b: 144.0, a: 255.0 };
+    pub const DARKSLATEGRAY: Color = Color { r: 47.0, g: 79.0, b: 79.0, a: 255.0 };
+    pub const BLACK: Color = Color { r: 0.0, g: 0.0, b: 0.0, a: 255.0 };
 }
 
 #[cfg(test)]
@@ -381,14 +380,27 @@ mod tests {
 	
 	#[test]
 	fn color_from() {
-		let color = Color::from(28, 25, 39, 255);
-		assert_eq!(color, Color { r: 28.0, g: 25.0, b: 39.0, a: 255.0 });
-	}
-
-	#[test]
-	fn color_from_f32() {
-		let color = Color::from_f32(28.0, 25.0, 39.0, 255.0);
-		assert_eq!(color, Color { r: 28.0, g: 25.0, b: 39.0, a: 255.0 });
+		let color_def = Color::from(28, 25, 39, 127);
+		let color_fdef = Color::from(28.0, 25.0, 39.0, 127.0);
+		let color_u8 = Color::from(28u8, 25u8, 39u8, 127u8);
+        let color_u16 = Color::from(28u16, 25u16, 39u16, 127u16);
+        let color_u32 = Color::from(28u32, 25u32, 39u32, 127u32);
+        let color_i8 = Color::from(28i8, 25i8, 39i8, 127i8);
+        let color_i16 = Color::from(28i16, 25i16, 39i16, 127i16);
+        let color_i32 = Color::from(28i32, 25i32, 39i32, 127i32);
+        let color_f32 = Color::from(28.0f32, 25.0f32, 39.0f32, 127.0f32);
+        let color_f64 = Color::from(28.0f64, 25.0f64, 39.0f64, 127.0f64);
+        let color = Color { r: 28.0, g: 25.0, b: 39.0, a: 127.0 };
+		assert_eq!(color_def, color);
+		assert_eq!(color_fdef, color);
+        assert_eq!(color_u8, color);
+		assert_eq!(color_u16, color);
+		assert_eq!(color_u32, color);
+		assert_eq!(color_i8, color);
+		assert_eq!(color_i16, color);
+		assert_eq!(color_i32, color);
+		assert_eq!(color_f32, color);
+		assert_eq!(color_f64, color);
 	}
 
 	#[test]

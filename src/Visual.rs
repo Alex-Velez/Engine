@@ -23,7 +23,7 @@ pub struct Triangle {
 impl Triangle {
 	pub const fn new() -> Triangle {
 		Triangle {
-			points: (Position2D::from(0, 0), Position2D::from(1, 0), Position2D::from(0, -1)),
+			points: (Position2D::new(), Position2D { x: 1.0, y: 0.0 }, Position2D { x: 0.0, y: -1.0 }),
 			offset: Position2D::new(),
 			rotation: Rotation2D::new(),
 			color: Color::new(),

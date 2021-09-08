@@ -1,7 +1,7 @@
 [package]
 name = "Engine"
 description = "A lightweight game framework for making games with minimum friction"
-version = "0.1.4"
+version = "0.1.5"
 repository = "https://github.com/Alex-Velez/Engine"
 keywords = ["engine", "graphics", "2D", "game"]
 authors = ["Alexander Velez <alexandervelez7245@gmail.com>"]

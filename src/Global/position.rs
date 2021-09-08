@@ -13,13 +13,9 @@ impl Position2D {
         Position2D { x: 0.0, y: 0.0 }
 	}
 
-	pub const fn from(x: i32, y: i32) -> Position2D {
-        Position2D { x: x as f32, y: y as f32 }
-	}
-
-    pub const fn from_f32(x: f32, y: f32) -> Position2D {
-        Position2D { x, y }
-	}
+	pub fn from<T: Into<f64>>(x: T, y: T) -> Position2D {
+        Position2D { x: x.into() as f32, y: y.into() as f32 }
+    }
 
     pub fn set(&mut self, x: f32, y: f32) {
 		self.x = x;
@@ -187,14 +183,27 @@ mod tests {
 
     #[test]
 	fn postion_2d_from() {
-		let position = Position2D::from(120, 74);
-		assert_eq!(position, Position2D { x: 120.0, y: 74.0 });
-	}
-
-    #[test]
-	fn postion_2d_from_f32() {
-		let position = Position2D::from_f32(120.0, 74.0);
-		assert_eq!(position, Position2D { x: 120.0, y: 74.0 });
+        let position_def = Position2D::from(120, 74);
+        let position_fdef = Position2D::from(120.0, 74.0);
+        let position_u8 = Position2D::from(120u8, 74u8);
+        let position_u16 = Position2D::from(120u16, 74u16);
+        let position_u32 = Position2D::from(120u32, 74u32);
+        let position_i8 = Position2D::from(120i8, 74i8);
+        let position_i16 = Position2D::from(120i16, 74i16);
+        let position_i32 = Position2D::from(120i32, 74i32);
+        let position_f32 = Position2D::from(120.0f32, 74.0f32);
+        let position_f64 = Position2D::from(120.0f64, 74.0f64);
+        let position = Position2D { x: 120.0, y: 74.0 };
+        assert_eq!(position_def, position);
+        assert_eq!(position_fdef, position);
+		assert_eq!(position_u8, position);
+		assert_eq!(position_u16, position);
+		assert_eq!(position_u32, position);
+		assert_eq!(position_i8, position);
+		assert_eq!(position_i16, position);
+		assert_eq!(position_i32, position);
+		assert_eq!(position_f32, position);
+		assert_eq!(position_f64, position);
 	}
 
 	#[test]

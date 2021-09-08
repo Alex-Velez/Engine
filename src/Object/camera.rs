@@ -12,9 +12,9 @@ impl Camera2D {
 		Camera2D { focus_position: Vector2D::new(), zoom: 1.0 }
 	}
 
-	pub const fn from(focus_position: Vector2D, zoom: f32) -> Camera2D {
-		Camera2D { focus_position, zoom }
-	}
+    pub fn from<T: Into<f64>>(focus_position: Vector2D, zoom: T) -> Camera2D {
+        Camera2D { focus_position, zoom: zoom.into() as f32 }
+    }
 
 	pub fn get_projection_matrix(self, window: Window) -> Matrix4x4 {
 		let left = self.focus_position.x - window.size.x / 2.0;
@@ -23,7 +23,7 @@ impl Camera2D {
 		let bottom = self.focus_position.y + window.size.y / 2.0;
 
 		let orthoMatrix: Matrix4x4 = Matrix4x4::create_orthographic_off_center(left, right, bottom, top, 0.01, 100.0);
-		let zoomMatrix: Matrix4x4 = Matrix4x4::create_scale(Scale3D::from_f32(self.zoom, self.zoom, self.zoom));
+		let zoomMatrix: Matrix4x4 = Matrix4x4::create_scale(Scale3D::from(self.zoom, self.zoom, self.zoom));
 
 		orthoMatrix.mult(zoomMatrix)
 	}

@@ -1,6 +1,6 @@
 use crate::Math;
 use std::cmp::{Eq, PartialEq};
-use std::convert::{From, Into};
+use std::convert::Into;
 use std::ops::{Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign};
 
 #[derive(Copy, Clone, Debug)]
@@ -9,29 +9,30 @@ pub struct Rotation2D {
 	radians: f32,
 }
 
-impl From<i32> for Rotation2D {
-    fn from(degrees: i32) -> Self {
-        Rotation2D { degrees: degrees as f32, radians: Math::DEG_RAD * (degrees as f32) }
-    }
-}
-
-impl From<f32> for Rotation2D {
-    fn from(degrees: f32) -> Self {
-        Rotation2D { degrees, radians: Math::DEG_RAD * degrees }
-    }
-}
-
 impl Rotation2D {
 	pub const fn new() -> Rotation2D {
 		Rotation2D { degrees: 0.0, radians: 0.0 }
 	}
 
-	pub fn from_deg(degrees: f32) -> Rotation2D {
-		Rotation2D { degrees: degrees % 360.0, radians: Math::DEG_RAD * (degrees % 360.0) }
+    pub fn from<T: Into<f64> + Copy>(degrees: T) -> Rotation2D {
+        Rotation2D {
+            degrees: (degrees.into() as f32) % 360.0,
+            radians: Math::DEG_RAD * ((degrees.into() as f32) % 360.0),
+        }
 	}
 
-	pub fn from_rad(radians: f32) -> Rotation2D {
-		Rotation2D { degrees: Math::RAD_DEG * (radians % Math::TWO_PIE), radians: radians % Math::TWO_PIE }
+    pub fn from_deg<T: Into<f64> + Copy>(degrees: T) -> Rotation2D {
+        Rotation2D {
+            degrees: (degrees.into() as f32) % 360.0,
+            radians: Math::DEG_RAD * ((degrees.into() as f32) % 360.0),
+        }
+	}
+
+    pub fn from_rad<T: Into<f64> + Copy>(radians: T) -> Rotation2D {
+        Rotation2D {
+            degrees: Math::RAD_DEG * ((radians.into() as f32) % Math::TWO_PIE),
+            radians: (radians.into() as f32) % Math::TWO_PIE,
+        }
 	}
 
 	pub fn deg(self) -> f32 { self.degrees }
@@ -186,7 +187,7 @@ impl <T> DivAssign<T> for Rotation2D
 
 #[cfg(test)]
 mod tests {
-	use super::*;
+    use super::*;
 
 	#[test]
 	fn rotation_new() {
@@ -195,27 +196,79 @@ mod tests {
 	}
 
 	#[test]
-	fn rotation_from_i32() {
-		let rot = Rotation2D::from(180);
-		assert_eq!(rot, Rotation2D { degrees: 180.0, radians: std::f32::consts::PI });
-	}
-
-	#[test]
-	fn rotation_from_f32() {
-		let rot = Rotation2D::from(180.0);
-		assert_eq!(rot, Rotation2D { degrees: 180.0, radians: std::f32::consts::PI });
+	fn rotation_from() {
+        let rotation_def = Rotation2D::from(127);
+        let rotation_fdef = Rotation2D::from(127.0);
+        let rotation_u8 = Rotation2D::from(127u8);
+        let rotation_u16 = Rotation2D::from(127u16);
+        let rotation_u32 = Rotation2D::from(127u32);
+        let rotation_i8 = Rotation2D::from(127i8);
+        let rotation_i16 = Rotation2D::from(127i16);
+        let rotation_i32 = Rotation2D::from(127i32);
+        let rotation_f32 = Rotation2D::from(127.0f32);
+        let rotation_f64 = Rotation2D::from(127.0f64);
+        let rotation = Rotation2D { degrees: 127.0, radians: 127.0 * Math::DEG_RAD };
+        assert_eq!(rotation_def, rotation);
+        assert_eq!(rotation_fdef, rotation);
+		assert_eq!(rotation_u8, rotation);
+		assert_eq!(rotation_u16, rotation);
+		assert_eq!(rotation_u32, rotation);
+		assert_eq!(rotation_i8, rotation);
+		assert_eq!(rotation_i16, rotation);
+		assert_eq!(rotation_i32, rotation);
+		assert_eq!(rotation_f32, rotation);
+		assert_eq!(rotation_f64, rotation);
 	}
 
 	#[test]
 	fn rotation_from_deg() {
-		let rot = Rotation2D::from_deg(180.0);
-		assert_eq!(rot, Rotation2D { degrees: 180.0, radians: std::f32::consts::PI });
+        let rotation_def = Rotation2D::from_deg(127);
+        let rotation_fdef = Rotation2D::from_deg(127.0);
+        let rotation_u8 = Rotation2D::from_deg(127u8);
+        let rotation_u16 = Rotation2D::from_deg(127u16);
+        let rotation_u32 = Rotation2D::from_deg(127u32);
+        let rotation_i8 = Rotation2D::from_deg(127i8);
+        let rotation_i16 = Rotation2D::from_deg(127i16);
+        let rotation_i32 = Rotation2D::from_deg(127i32);
+        let rotation_f32 = Rotation2D::from_deg(127.0f32);
+        let rotation_f64 = Rotation2D::from_deg(127.0f64);
+        let rotation = Rotation2D { degrees: 127.0, radians: 127.0 * Math::DEG_RAD };
+        assert_eq!(rotation_def, rotation);
+        assert_eq!(rotation_fdef, rotation);
+		assert_eq!(rotation_u8, rotation);
+		assert_eq!(rotation_u16, rotation);
+		assert_eq!(rotation_u32, rotation);
+		assert_eq!(rotation_i8, rotation);
+		assert_eq!(rotation_i16, rotation);
+		assert_eq!(rotation_i32, rotation);
+		assert_eq!(rotation_f32, rotation);
+		assert_eq!(rotation_f64, rotation);
 	}
 
 	#[test]
 	fn rotation_from_rad() {
-		let rot = Rotation2D::from_rad(std::f32::consts::PI);
-		assert_eq!(rot, Rotation2D { degrees: 180.0, radians: std::f32::consts::PI });
+        let rotation_def = Rotation2D::from_rad(3);
+        let rotation_fdef = Rotation2D::from_rad(3.14159265358979323846264338327950288);
+        let rotation_u8 = Rotation2D::from_rad(3u8);
+        let rotation_u16 = Rotation2D::from_rad(3u16);
+        let rotation_u32 = Rotation2D::from_rad(3u32);
+        let rotation_i8 = Rotation2D::from_rad(3i8);
+        let rotation_i16 = Rotation2D::from_rad(3i16);
+        let rotation_i32 = Rotation2D::from_rad(3i32);
+        let rotation_f32 = Rotation2D::from_rad(3.14159265358979323846264338327950288f32);
+        let rotation_f64 = Rotation2D::from_rad(3.14159265358979323846264338327950288f64);
+        let rotation1 = Rotation2D { degrees: 3.0 * Math::RAD_DEG, radians: 3.0 };
+        let rotation2 = Rotation2D { degrees: 180.0, radians: std::f32::consts::PI };
+        assert_eq!(rotation_def, rotation1);
+        assert_eq!(rotation_fdef, rotation2);
+		assert_eq!(rotation_u8, rotation1);
+		assert_eq!(rotation_u16, rotation1);
+		assert_eq!(rotation_u32, rotation1);
+		assert_eq!(rotation_i8, rotation1);
+		assert_eq!(rotation_i16, rotation1);
+		assert_eq!(rotation_i32, rotation1);
+		assert_eq!(rotation_f32, rotation2);
+		assert_eq!(rotation_f64, rotation2);
 	}
 
 	#[test]

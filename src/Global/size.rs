@@ -13,13 +13,9 @@ impl Size2D {
 		Size2D { x: 0.0, y: 0.0 }
 	}
 
-    pub const fn from(x: u32, y: u32) -> Size2D {
-		Size2D { x: x as f32, y: y as f32 }
-	}
-
-	pub const fn from_f32(x: f32, y: f32) -> Size2D {
-		Size2D { x, y }
-	}
+    pub fn from<T: Into<f64>>(x: T, y: T) -> Size2D {
+        Size2D { x: x.into() as f32, y: y.into() as f32 }
+    }
 
     pub fn set(&mut self, x: f32, y: f32) {
 		self.x = x;
@@ -187,13 +183,9 @@ impl Size3D {
 		Size3D { x: 0.0, y: 0.0, z: 0.0 }
 	}
 
-    pub const fn from(x: u32, y: u32, z: u32) -> Size3D {
-		Size3D { x: x as f32, y: y as f32, z: z as f32 }
-	}
-
-	pub const fn from_f32(x: f32, y: f32, z: f32) -> Size3D {
-		Size3D { x, y, z }
-	}
+    pub fn from<T: Into<f64>>(x: T, y: T, z: T) -> Size3D {
+        Size3D { x: x.into() as f32, y: y.into() as f32, z: z.into() as f32 }
+    }
 
     pub fn set(&mut self, x: f32, y: f32, z: f32) {
 		self.x = x;
@@ -379,14 +371,27 @@ mod tests {
 
     #[test]
 	fn size_2d_from() {
-		let size2d = Size2D::from(120, 74);
-		assert_eq!(size2d, Size2D { x: 120.0, y: 74.0 });
-	}
-
-    #[test]
-	fn size_2d_from_f32() {
-		let size2d = Size2D::from_f32(120.0, 74.0);
-		assert_eq!(size2d, Size2D { x: 120.0, y: 74.0 });
+        let size_2d_def = Size2D::from(120, 74);
+        let size_2d_fdef = Size2D::from(120.0, 74.0);
+        let size_2d_u8 = Size2D::from(120u8, 74u8);
+        let size_2d_u16 = Size2D::from(120u16, 74u16);
+        let size_2d_u32 = Size2D::from(120u32, 74u32);
+        let size_2d_i8 = Size2D::from(120i8, 74i8);
+        let size_2d_i16 = Size2D::from(120i16, 74i16);
+        let size_2d_i32 = Size2D::from(120i32, 74i32);
+        let size_2d_f32 = Size2D::from(120.0f32, 74.0f32);
+        let size_2d_f64 = Size2D::from(120.0f64, 74.0f64);
+        let size_2d = Size2D { x: 120.0, y: 74.0 };
+        assert_eq!(size_2d_def, size_2d);
+        assert_eq!(size_2d_fdef, size_2d);
+		assert_eq!(size_2d_u8, size_2d);
+		assert_eq!(size_2d_u16, size_2d);
+		assert_eq!(size_2d_u32, size_2d);
+		assert_eq!(size_2d_i8, size_2d);
+		assert_eq!(size_2d_i16, size_2d);
+		assert_eq!(size_2d_i32, size_2d);
+		assert_eq!(size_2d_f32, size_2d);
+		assert_eq!(size_2d_f64, size_2d);
 	}
 
 	#[test]
@@ -524,14 +529,27 @@ mod tests {
 
     #[test]
 	fn size_3d_from() {
-		let size3d = Size3D::from(120, 74, 33);
-		assert_eq!(size3d, Size3D { x: 120.0, y: 74.0, z: 33.0 });
-	}
-
-    #[test]
-	fn size_3d_from_f32() {
-		let size3d = Size3D::from_f32(120.0, 74.0, 33.0);
-		assert_eq!(size3d, Size3D { x: 120.0, y: 74.0, z: 33.0 });
+		let size_3d_def = Size3D::from(120, 74, 33);
+        let size_3d_fdef = Size3D::from(120.0, 74.0, 33.0);
+        let size_3d_u8 = Size3D::from(120u8, 74u8, 33u8);
+        let size_3d_u16 = Size3D::from(120u16, 74u16, 33u16);
+        let size_3d_u32 = Size3D::from(120u32, 74u32, 33u32);
+        let size_3d_i8 = Size3D::from(120i8, 74i8, 33i8);
+        let size_3d_i16 = Size3D::from(120i16, 74i16, 33i16);
+        let size_3d_i32 = Size3D::from(120i32, 74i32, 33i32);
+        let size_3d_f32 = Size3D::from(120.0f32, 74.0f32, 33.0f32);
+        let size_3d_f64 = Size3D::from(120.0f64, 74.0f64, 33.0f64);
+        let size_3d = Size3D { x: 120.0, y: 74.0, z: 33.0 };
+        assert_eq!(size_3d_def, size_3d);
+        assert_eq!(size_3d_fdef, size_3d);
+		assert_eq!(size_3d_u8, size_3d);
+		assert_eq!(size_3d_u16, size_3d);
+		assert_eq!(size_3d_u32, size_3d);
+		assert_eq!(size_3d_i8, size_3d);
+		assert_eq!(size_3d_i16, size_3d);
+		assert_eq!(size_3d_i32, size_3d);
+		assert_eq!(size_3d_f32, size_3d);
+		assert_eq!(size_3d_f64, size_3d);
 	}
 
 	#[test]
