@@ -110,7 +110,7 @@ impl Matrix4x4 {
 		Matrix4x4 { identity, translation: Vector3D::new() }
 	}
 
-	pub fn create_tranlation(x: f32, y: f32, z: f32) -> Matrix4x4 {
+	pub fn create_translation(x: f32, y: f32, z: f32) -> Matrix4x4 {
 		let mut identity: [[f32; 4]; 4] = [
 			[1.0, 0.0, 0.0, 0.0],
 			[0.0, 1.0, 0.0, 0.0],

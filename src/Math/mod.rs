@@ -5,9 +5,11 @@ pub use vector::*;
 pub use matrix::*;
 
 // Math Constants
+pub const PI: f32 = std::f32::consts::PI;
 pub const DEG_RAD: f32 = std::f32::consts::PI / 180.0;
 pub const RAD_DEG: f32 = 180.0 / std::f32::consts::PI;
 pub const TWO_PIE: f32 = std::f32::consts::PI * 2.000;
+pub const PI_F64: f64 = std::f64::consts::PI;
 pub const DEG_RAD_F64: f64 = std::f64::consts::PI / 180.0;
 pub const RAD_DEG_F64: f64 = 180.0 / std::f64::consts::PI;
 pub const TWO_PIE_F64: f64 = std::f64::consts::PI * 2.000;
@@ -34,16 +36,14 @@ pub fn total_elapsed_seconds_f64() -> f64 {
 
 pub mod Debug {
     pub mod Random {
-        pub fn range(min: u32, max:u32) -> u32 {
-            let mut num:u32 = std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap()
-                .subsec_nanos() as u32;
-            for x in [13,17,5,11,3,19,7].iter() {
-                num ^= num << x;
-                num ^= num >> x % 9;
+        pub fn range(mut seed: u32, min: u32, max: u32) -> u32 {
+            for x in [3, 5, 7, 9, 11, 13, 15, 17, 19].iter() {
+                seed ^= seed << x;
+                seed ^= seed / (21 + min) >> x;
+                seed ^= seed / (23 + max) << x;
             }
-            (num % (max + 1)) + min
+        
+            (seed + min) % max
         }
     }
 }

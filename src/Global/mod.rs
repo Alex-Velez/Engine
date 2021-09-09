@@ -161,7 +161,7 @@ pub fn Run(win: Window, start: fn(), update: fn(), end: fn()) {
 			let rotation = Rotation2D::from_rad((total_elapsed_seconds.sin() * Math::TWO_PIE_F64) as f32);
 			//Rotation2D::from_rad(std::f32::consts::PI / 4.0);
 
-			let trans = Matrix4x4::create_tranlation(position.x, position.y, 0.0);
+			let trans = Matrix4x4::create_translation(position.x, position.y, 0.0);
 			let sca = Matrix4x4::create_scale(scale);
 			let rot = Matrix4x4::create_rotation_z(rotation);
 
