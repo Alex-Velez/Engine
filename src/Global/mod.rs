@@ -3,21 +3,24 @@ use image::{self, RgbaImage};
 
 use std::sync::mpsc::Receiver;
 use std::ptr;
-use std::str;
 use std::mem;
 use std::os::raw::c_void;
 
-pub(crate) mod color;
-pub(crate) mod position;
-pub(crate) mod rotation;
-pub(crate) mod scale;
-pub(crate) mod size;
+mod color;
+mod position;
+mod rotation;
+mod scale;
+mod size;
+mod transform;
+mod window;
 
 pub use color::*;
 pub use position::*;
 pub use rotation::*;
 pub use scale::*;
 pub use size::*;
+pub use transform::*;
+pub use window::*;
 
 pub fn Run(win: Window, start: fn(), update: fn(), end: fn()) {
 
@@ -53,7 +56,7 @@ pub fn Run(win: Window, start: fn(), update: fn(), end: fn()) {
 
 	window.set_icon_from_pixels(gen_icon());
 	window.set_pos(x, y);
-	window.set_aspect_ratio(win.aspect_ratio.0, win.aspect_ratio.1);
+	window.set_aspect_ratio(win.aspect_ratio.0 as u32, win.aspect_ratio.1 as u32);
 	window.set_size_limits(
 		Some(win.min.x as u32),
 		Some(win.min.y as u32),
@@ -217,170 +220,26 @@ fn KeyboardHandler(window: &mut glfw::Window, event: glfw::WindowEvent) {
 	}
 }
 
-// todo: create unit tests and impls
-#[derive(Clone, Copy, Debug)]
-pub struct Window {
-    pub title: &'static str,
-    pub icon: &'static str,
-    pub size: Size2D,
-    pub max: Size2D,
-	pub min: Size2D,
-	pub aspect_ratio: Ratio2D,
-    pub resizable: bool,
-    pub fullscreen: bool,
-    pub maximized: bool,
-    pub visible: bool,
-    pub focused: bool,
-    pub transparent: bool,
-    pub decorations: bool,
-    pub always_on_top: bool,
-	pub color: Color,
-}
-
-impl Window {
-    pub const fn new() -> Window {
-        Window {
-            title: "window",
-            icon: "",
-            size: Size2D { x: 856.0, y: 482.0 },
-            max: Size2D { x: 856.0, y: 482.0 },
-			min: Size2D { x: 160.0, y: 90.0 },
-			aspect_ratio: Ratio2D(16, 9),
-            resizable: true,
-            fullscreen: false,
-            maximized: false,
-            visible: true,
-            focused: true,
-            transparent: false,
-            decorations: true,
-            always_on_top: false,
-			color: Color::BLACK,
-        }
-    }
-
-    pub const fn from(title: &'static str, size: Size2D, color: Color) -> Window {
-        Window {
-            title,
-            icon: "",
-            size,
-            max: size,
-			min: Size2D { x: 160.0, y: 90.0 },
-			aspect_ratio: Ratio2D(16, 9),
-            resizable: true,
-            fullscreen: false,
-            maximized: false,
-            visible: true,
-            focused: true,
-            transparent: false,
-            decorations: true,
-            always_on_top: false,
-			color,
-        }
-    }
-
-    pub const fn title(mut self, title: &'static str) -> Window {
-        self.title = title;
-        self
-    }
-
-    pub const fn icon(mut self, icon: &'static str) -> Window {
-        self.icon = icon;
-        self
-    }
-
-    pub const fn size(mut self, size: Size2D) -> Window {
-        self.size = size;
-        self
-    }
-
-    pub const fn max(mut self, max: Size2D) -> Window {
-        self.max = max;
-        self
-    }
-
-    pub const fn min(mut self, min: Size2D) -> Window {
-        self.min = min;
-        self
-    }
-
-    pub const fn resizable(mut self, resizable: bool) -> Window {
-        self.resizable = resizable;
-        self
-    }
-
-    pub const fn fullscreen(mut self, fullscreen: bool) -> Window {
-        self.fullscreen = fullscreen;
-        self
-    }
-
-    pub const fn maximized(mut self, maximized: bool) -> Window {
-        self.maximized = maximized;
-        self
-    }
-
-    pub const fn visible(mut self, visible: bool) -> Window {
-        self.visible = visible;
-        self
-    }
-
-    pub const fn focused(mut self, focused: bool) -> Window {
-        self.focused = focused;
-        self
-    }
-
-    pub const fn transparent(mut self, transparent: bool) -> Window {
-        self.transparent = transparent;
-        self
-    }
-
-    pub const fn decorations(mut self, decorations: bool) -> Window {
-        self.decorations = decorations;
-        self
-    }
-
-    pub const fn always_on_top(mut self, always_on_top: bool) -> Window {
-        self.always_on_top = always_on_top;
-        self
-    }
-
-    pub const fn color(mut self, color: Color) -> Window {
-        self.color = color;
-        self
-    }
-
-	pub const fn draw() {}
-}
-
-// todo: create unit tests and impls
-#[derive(Copy, Clone, Debug)]
-pub struct Transform2D {
-	pub position: Position2D,
-	pub rotation: Rotation2D,
-	pub scale: Scale2D,
-}
-
-impl Transform2D {
-	pub const fn new() -> Transform2D {
-		Transform2D {
-			position: Position2D::new(),
-			rotation: Rotation2D::new(),
-			scale: Scale2D::new(),
+// todo: fix icon data generator (make it work!)
+fn gen_icon() -> Vec<glfw::PixelImage> {
+	vec![
+		// icon 1
+		glfw::PixelImage {
+			width: 100,
+			height: 100,
+			pixels: {
+				let img: RgbaImage = image::open("resources/gear.png").unwrap().into_rgba8();
+				let mut data_u8: Vec<u8> = Vec::new();
+				for rgba in img.pixels() { data_u8.append(&mut rgba.0.to_vec()); }
+				let mut data_u32: Vec<u32> = Vec::new();
+				for x in data_u8 { data_u32.push(x as u32); }
+				data_u32
+			},
 		}
-	}
+	]
 }
 
-#[derive(Copy, Clone, Debug)]
-pub struct Ratio2D(u32, u32);
-
-impl Eq for Ratio2D {}
-
-impl PartialEq for Ratio2D {
-    fn eq(&self, other: &Ratio2D) -> bool {
-        self.0 == other.0 && self.1 == other.1
-    }
-}
-
-
+/*
 // todo: create unit tests and impls
 #[derive(Copy, Clone, Debug)]
 pub struct Sprite2D {
@@ -404,26 +263,7 @@ impl Sprite2D {
 	}
 }
 
-// todo: fix icon data generator (make it work!)
-fn gen_icon() -> Vec<glfw::PixelImage> {
-	vec![
-		// icon 1
-		glfw::PixelImage {
-			width: 100,
-			height: 100,
-			pixels: {
-				let img: RgbaImage = image::open("resources/gear.png").unwrap().into_rgba8();
-				let mut data_u8: Vec<u8> = Vec::new();
-				for rgba in img.pixels() { data_u8.append(&mut rgba.0.to_vec()); }
-				let mut data_u32: Vec<u32> = Vec::new();
-				for x in data_u8 { data_u32.push(x as u32); }
-				data_u32
-			},
-		}
-	]
-}
 
-/*
 #[derive(Copy, Clone, Debug)]
 struct AnimationTrigger {
 	pub index: usize,
@@ -506,14 +346,3 @@ impl Animation2D {
 	pub fn Trigger(index: usize, trigger: fn()) ->
 }
 */
-
-#[cfg(test)]
-mod tests {
-	use super::*;
-
-	#[test]
-	fn ratio_2d() {
-		let ratio = Ratio2D(16, 9);
-		assert_eq!(ratio, Ratio2D(16, 9));
-	}
-}
