@@ -38,12 +38,12 @@ pub mod Debug {
     pub mod Random {
         pub fn range(mut seed: u32, min: u32, max: u32) -> u32 {
             for x in [3, 5, 7, 9, 11, 13, 15, 17, 19].iter() {
-                seed ^= seed << x;
+                seed ^= seed + 1 << x;
                 seed ^= seed / (21 + min) >> x;
                 seed ^= seed / (23 + max) << x;
             }
         
-            (seed + min) % max
+            (seed % (max - min + 1)) + min
         }
     }
 }
